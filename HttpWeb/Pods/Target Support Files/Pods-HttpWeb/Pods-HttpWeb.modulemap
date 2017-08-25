@@ -1,0 +1,6 @@
+framework module Pods_HttpWeb {
+  umbrella header "Pods-HttpWeb-umbrella.h"
+
+  export *
+  module * { export * }
+}
