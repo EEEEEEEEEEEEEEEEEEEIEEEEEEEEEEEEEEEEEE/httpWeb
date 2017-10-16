@@ -36,6 +36,8 @@ extension Response {
 extension ObservableType where E == Response {
     public func mapObject<T: BaseMappable>(_ type: T.Type) -> Observable<T> {
         return flatMap { response -> Observable<T> in
+            print("\(response.response?.url)")
+            print("\(response.data)")
             return Observable.just(try response.mapObject(T.self))
         }
     }

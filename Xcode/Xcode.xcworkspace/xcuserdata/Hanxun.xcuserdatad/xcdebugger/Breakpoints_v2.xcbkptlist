@@ -26,13 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Code/Service/F2Pool/F2poolService.swift"
-            timestampString = "527860310.446967"
+            timestampString = "529588213.859948"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
-            landmarkName = "getLoginCookies()"
-            landmarkType = "7">
+            startingLineNumber = "193"
+            endingLineNumber = "193">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -42,13 +40,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Code/Service/F2Pool/F2poolService.swift"
-            timestampString = "527860310.446967"
+            timestampString = "529588213.859948"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "69"
-            endingLineNumber = "69"
-            landmarkName = "getLoginCookies()"
-            landmarkType = "7">
+            startingLineNumber = "211"
+            endingLineNumber = "211">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -58,13 +54,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Code/Service/F2Pool/F2poolService.swift"
-            timestampString = "527860310.446967"
+            timestampString = "529588213.859948"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "61"
-            endingLineNumber = "61"
-            landmarkName = "getLoginCookies()"
-            landmarkType = "7">
+            startingLineNumber = "191"
+            endingLineNumber = "191">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -73,77 +67,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Code/Service/F2Pool/F2poolService.swift"
-            timestampString = "527860282.301899"
+            filePath = "Code/LoginViewController/Controllers/LoginViewController.swift"
+            timestampString = "529226967.892186"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "33"
-            endingLineNumber = "33"
-            landmarkName = "getLoginCookie()"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Xcode.F2poolService.(getLoginCookie () -&gt; ()).(closure #1)"
-                  moduleName = "Xcode"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Hanxun/Desktop/Swift/httpWeb/Xcode/Code/Service/F2Pool/F2poolService.swift"
-                  timestampString = "527860546.63385"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "33"
-                  endingLineNumber = "33"
-                  offsetFromSymbolStart = "2088">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Xcode.F2poolService.(getLoginCookie () -&gt; ()).(closure #1).(closure #1)"
-                  moduleName = "Xcode"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Hanxun/Desktop/Swift/httpWeb/Xcode/Code/Service/F2Pool/F2poolService.swift"
-                  timestampString = "527860546.635912"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "35"
-                  endingLineNumber = "35"
-                  offsetFromSymbolStart = "20">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Code/Service/F2Pool/F2poolService.swift"
-            timestampString = "527860284.966976"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "30"
-            endingLineNumber = "30"
-            landmarkName = "getLoginCookie()"
+            startingLineNumber = "98"
+            endingLineNumber = "98"
+            landmarkName = "showHUD(message:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Code/Service/F2Pool/F2poolService.swift"
-            timestampString = "527860345.304563"
+            filePath = "Code/Service/SeriveCenter.swift"
+            timestampString = "529567502.351458"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "37"
-            endingLineNumber = "37"
-            landmarkName = "getLoginCookie()"
+            startingLineNumber = "401"
+            endingLineNumber = "401"
+            landmarkName = "initGetSignalRData()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

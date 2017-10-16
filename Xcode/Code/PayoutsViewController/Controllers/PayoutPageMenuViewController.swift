@@ -18,17 +18,34 @@ class PayoutPageMenuViewController: UIViewController, CAPSPageMenuDelegate {
         
         var controllerArray: [UIViewController] = []
         
-        let ethController = PayoutETHViewController()
-        ethController.title = "ETH"
+        
+        let ethController = PayoutBaseViewController()
+        ethController.payoutViewModel.coinTypeRxIn.value = EnumCurrency.ETH
+        ethController.title = EnumCurrency.ETH.description
         controllerArray.append(ethController)
         
-        let btcController = PayoutBTCViewController()
-        btcController.title = "BTC"
+        let btcController = PayoutBaseViewController()
+        btcController.payoutViewModel.coinTypeRxIn.value = EnumCurrency.BTC
+        btcController.title = EnumCurrency.BTC.description
         controllerArray.append(btcController)
         
-        let ltcController = PayoutLTCViewController()
-        ltcController.title = "LTC"
+        let ltcController = PayoutBaseViewController()
+        ltcController.payoutViewModel.coinTypeRxIn.value = EnumCurrency.LTC
+        ltcController.title = EnumCurrency.LTC.description
         controllerArray.append(ltcController)
+        
+        
+//        let ethController = PayoutETHViewController()
+//        ethController.title = "ETH"
+//        controllerArray.append(ethController)
+        
+//        let btcController = PayoutBTCViewController()
+//        btcController.title = "BTC"
+//        controllerArray.append(btcController)
+//        
+//        let ltcController = PayoutLTCViewController()
+//        ltcController.title = "LTC"
+//        controllerArray.append(ltcController)
         
         // Customize menu (Optional)
         let parameters: [CAPSPageMenuOption] = [

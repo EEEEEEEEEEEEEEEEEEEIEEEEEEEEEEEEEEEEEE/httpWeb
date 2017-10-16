@@ -7,20 +7,32 @@
 //
 
 import UIKit
+import RxCocoa
+import RxSwift
 import ESTabBarController_swift
 
 class MainViewController: ESTabBarController {
 
-//    let kindVC   = KindViewController()
+    let disposeBag = DisposeBag()
+    
     let kindVC   = KindsViewController()
     let poolVC   = PoolViewController()
     let workerVC = WorkerPageMenuViewController()
     let payoutVC = PayoutPageMenuViewController()
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // 未登陆先要登陆
+        SingalRService.getInstance().loginStatus.asObservable().subscribe(onNext: { (loginStatus) in
+            if loginStatus != EnumResult.success {
+                self.present(LoginViewController(), animated: false, completion: nil)
+            }
+        }).addDisposableTo(disposeBag)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         /// 系统方式
         
 //        homeVC.tabBarItem   = UITabBarItem.init(title: "ETH", image: UIImage(named: "ETHNormal"), selectedImage: UIImage(named: "ETHSelect"))

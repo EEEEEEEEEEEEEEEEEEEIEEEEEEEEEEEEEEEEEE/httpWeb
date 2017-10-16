@@ -1,8 +1,8 @@
 //
-//  PayoutETHViewController.swift
+//  PayoutBaseViewController.swift
 //  Xcode
 //
-//  Created by Hanxun on 2017/9/22.
+//  Created by Hanxun on 2017/10/11.
 //  Copyright © 2017年 Simon. All rights reserved.
 //
 
@@ -12,13 +12,20 @@ import RxCocoa
 import MJRefresh
 import PopupDialog
 
-class PayoutETHViewController: UIViewController {
+class PayoutBaseViewController: UIViewController {
 
-    let viewModel = PayoutViewModel()
-    let disposeBag = DisposeBag()
+    let disposeBag      = DisposeBag()
+    let payoutViewModel = PayoutViewMode()
+    
+    
+    lazy var searchView: PoolSearchView = {
+        let search = PoolSearchView(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: 40))
+        return search
+    }()
     
     lazy var tableView: UITableView = {
-        let tabView = UITableView(frame:CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: SCREEN_HEIGHT - 60 - 49), style: .plain)
+        let tabView = UITableView(frame:CGRect(x: 0, y: 40, width: SCREEN_WIDTH,
+                                               height: SCREEN_HEIGHT - 60 - 40 - 49), style: .plain)
         tabView.delegate = self
         tabView.backgroundColor = CommonBackgroundColor()
         tabView.mj_header = MJRefreshNormalHeader(refreshingBlock: {
@@ -29,32 +36,37 @@ class PayoutETHViewController: UIViewController {
     }()
     let reuseIdentifier = "\(PayoutTableViewCell.self)"
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.initView()
-        self.initData()
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
     func initView() {
         
+        
+        payoutViewModel.initData()
+        self.view.addSubview(searchView)
+        searchView.searchBar.rx.text.orEmpty.bind(to: payoutViewModel.searchRxIn).addDisposableTo(disposeBag)
+        
+        
         /// tableView
-        viewModel.initData()
         self.tableView.allowsMultipleSelectionDuringEditing = true
         self.view.addSubview(tableView)
         self.tableView.register(PayoutTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
-        viewModel.payoutsArrayRx
+        
+        payoutViewModel.currentWorkerArrayRxOut.asDriver()
             .drive(tableView.rx.items(cellIdentifier: reuseIdentifier, cellType: PayoutTableViewCell.self)) { (row, element, cell) in
-                cell.itemNoLabel.text = "\(row)"
+                cell.itemNoLabel.text = "\(row + 1)"
                 cell.paidOnLabel.text = element.dateTime
-                cell.amountLabel.text = String(element.amount! / 1000000)
+                cell.amountLabel.text = element.amount == nil ? "" : String(format: "%.5f", element.amount!)
             }.addDisposableTo(disposeBag)
         
-        
+        /*
         tableView.rx.itemSelected
             .subscribe(onNext: { [weak self] indexPath in
                 return self?.viewModel.getTxData(index: indexPath.row).drive(onNext:{
@@ -63,11 +75,7 @@ class PayoutETHViewController: UIViewController {
                     let txArray = $0 as [TxModel]
                     self?.showPopupView(title: "Message", message: txArray[0].recipient!)
                 }).addDisposableTo((self?.disposeBag)!)
-            }).addDisposableTo(disposeBag)
-        
-    }
-    
-    func initData() {
+            }).addDisposableTo(disposeBag)  */
         
     }
     
@@ -86,7 +94,9 @@ class PayoutETHViewController: UIViewController {
 }
 
 
-extension PayoutETHViewController: UITableViewDelegate {
+
+
+extension PayoutBaseViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 44
@@ -97,10 +107,6 @@ extension PayoutETHViewController: UITableViewDelegate {
         return workerHeaderView
     }
 }
-
-
-
-
 
 
 

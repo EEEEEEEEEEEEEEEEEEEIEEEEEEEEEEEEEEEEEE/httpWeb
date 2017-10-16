@@ -10,10 +10,12 @@ import UIKit
 
 class KindTableViewCell: UITableViewCell {
 
-    let numberLabel   = BaseLabel()
-    let workerIdLabel = BaseLabel()
-    let coinTypeLabel = BaseLabel()
-    let lineSeparator = UIView()
+    let numberLabel    = BaseLabel()
+    let poolNameLabel  = BaseLabel()
+    let groupNamelabel = BaseLabel()
+    let workerIdLabel  = BaseLabel()
+    let coinTypeLabel  = BaseLabel()
+    let lineSeparator  = UIView()
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -42,7 +44,31 @@ class KindTableViewCell: UITableViewCell {
         self.contentView.addSubview(numberLabel)
         numberLabel.snp.makeConstraints { make in
             make.top.left.bottom.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.3)
+            make.width.equalToSuperview().multipliedBy(0.12)
+        }
+        
+        poolNameLabel.text = "PoolName"
+        poolNameLabel.textColor = UIColor.darkGray
+        poolNameLabel.textAlignment = .center
+        poolNameLabel.leftInset = 10
+        poolNameLabel.font = CommonFont14()
+        self.contentView.addSubview(poolNameLabel)
+        poolNameLabel.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.left.equalTo(numberLabel.snp.right)
+            make.width.equalToSuperview().multipliedBy(0.25)
+        }
+        
+        groupNamelabel.text = "GroupName"
+        groupNamelabel.textColor = UIColor.darkGray
+        groupNamelabel.textAlignment = .center
+        groupNamelabel.leftInset = 10
+        groupNamelabel.font = CommonFont14()
+        self.contentView.addSubview(groupNamelabel)
+        groupNamelabel.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.left.equalTo(poolNameLabel.snp.right)
+            make.width.equalToSuperview().multipliedBy(0.25)
         }
         
         workerIdLabel.text = "WorkerId"
@@ -53,20 +79,20 @@ class KindTableViewCell: UITableViewCell {
         self.contentView.addSubview(workerIdLabel)
         workerIdLabel.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
-            make.left.equalTo(numberLabel.snp.right)
-            make.width.equalToSuperview().multipliedBy(0.4)
+            make.left.equalTo(groupNamelabel.snp.right)
+            make.width.equalToSuperview().multipliedBy(0.2)
         }
         
         coinTypeLabel.text = "CoinType"
         coinTypeLabel.textColor = UIColor.darkGray
         coinTypeLabel.textAlignment = .center
-        coinTypeLabel.leftInset = 10
+        coinTypeLabel.leftInset = 5
         coinTypeLabel.font = CommonFont14()
         self.contentView.addSubview(coinTypeLabel)
         coinTypeLabel.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
             make.left.equalTo(workerIdLabel.snp.right)
-            make.width.equalToSuperview().multipliedBy(0.3)
+            make.width.equalToSuperview().multipliedBy(0.18)
         }
         
         self.contentView.addSubview(lineSeparator)

@@ -20,6 +20,8 @@ class ProjectConfig: NSObject {
     
     public func initData() {
 //        SignalRServerUrl = "http://182.162.147.161:9110"
-        SignalRServerUrl = "http://182.162.103.36:9110"
+//        SignalRServerUrl = "http://182.162.103.36:9110"
+        SignalRServerUrl = "http://182.162.103.37:9220"
+//        SignalRServerUrl = "http://182.162.103.34:9220"
     }
 }

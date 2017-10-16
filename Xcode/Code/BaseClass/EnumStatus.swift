@@ -11,10 +11,10 @@ import RxCocoa
 import RxSwift
 
 
-enum EnumResult {
-    case success(message: String)
-    case failed(message: String)
-    case empty
+enum EnumResult: Int {
+    case success  = 1
+    case failed   = 0
+    case empty    = 2
 }
 
 
@@ -55,6 +55,7 @@ extension EnumResult {
     }
 }
 
+/*
 extension EnumResult {
     var description: String {
         switch self {
@@ -64,6 +65,20 @@ extension EnumResult {
             return ""
         case let .failed(message):
             return message
+        }
+    }
+}
+ */
+
+extension EnumResult {
+    var text: String {
+        switch self {
+        case .success:
+            return "登陆成功"
+        case .empty:
+            return "不能为空"
+        case .failed:
+            return "登陆失败"
         }
     }
 }

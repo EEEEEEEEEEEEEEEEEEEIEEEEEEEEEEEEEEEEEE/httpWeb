@@ -30,10 +30,12 @@ class RegisterViewModel {
     
     init(input: (username: Observable<String>, password: Observable<String>, againPassword: Observable<String>, phoneNumber: Observable<String>)) {
         
+        
         // 这个要模拟请求服务器返回
         usernameCheck = input.username.asObservable().flatMapLatest{ username in
-            return ValidationService.instance.validateUsername(username).observeOn(MainScheduler.instance)
-                .catchErrorJustReturn(.failed(message: "username检测出错"))
+//            return ValidationService.instance.validateUsername(username).observeOn(MainScheduler.instance)
+//                .catchErrorJustReturn(EnumResult.failed)
+            Observable.just(EnumResult.failed)
         }.shareReplay(1)
         
 //        passwordCheck = input.password.subscribe(onNext: {

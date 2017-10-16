@@ -19,7 +19,7 @@ class LoginViewModel {
     init(input: (username: Driver<String>, password: Driver<String>, loginTaps: Driver<Void>)) {
         
         loginButtonEnabled = Driver.combineLatest(input.username, input.password) {
-            ($0.characters.count >= 6) && ($1.characters.count >= 6)
+            ($0.characters.count >= 1) && ($1.characters.count >= 1)
         }.asDriver()
         
         let usernameAndPassword = Driver.combineLatest(input.username, input.password) {
@@ -28,8 +28,8 @@ class LoginViewModel {
         
         loginResult = input.loginTaps.withLatestFrom(usernameAndPassword)
             .flatMapLatest {  (username, password) in
-                return ValidationService.instance.login(username, password: password)
-                    .asDriver(onErrorJustReturn: .failed(message: "连接超时"))
+                return SeriveCenter.getInstance().login(username, password: password)
+                    .asDriver(onErrorJustReturn: .failed)
             }
     }
 }

@@ -13,13 +13,15 @@ import RxSwift
 class KindsViewController: UIViewController {
 
     let disposeBag = DisposeBag()
-    var kindViewModel: KindViewModel!
+    var poolViewModel = PoolViewModel()
     var editView: KindEditView!
+    
     
     private lazy var tableView: UITableView = {
         let tabView = UITableView(frame: CGRect(x: 0, y: 104, width: SCREEN_WIDTH, height: SCREEN_HEIGHT - 104 - 49))
         tabView.allowsMultipleSelectionDuringEditing = true
         tabView.delegate = self
+        tabView.separatorStyle = .none
         return tabView
     }()
     let reuseIdentifier = "\(KindTableViewCell.self)"
@@ -36,22 +38,65 @@ class KindsViewController: UIViewController {
     
     private func initView() {
         
-        /// 初始化
-        kindViewModel = KindViewModel()
-        kindViewModel.initSearch()
-        
         /// navBar
         let navBarView = NavBarView(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: 64))
+        navBarView.titleLabel.text = "Config"
+        navBarView.leftButton.setTitle("PoolNull ", for: .normal)
+        navBarView.leftViceButton.setTitle("GroupNull ", for: .normal)
+        navBarView.rightButton.setTitle("", for: .normal)
         self.view.addSubview(navBarView)
-        navBarView.titleLabel.text = "EtherChain"
-        navBarView.leftButton.setTitle("", for: .normal)
-        navBarView.rightButton.setTitle("Login", for: .normal)
+        
+        /* 一级: pool */
+        navBarView.leftButton.rx.tap.subscribe(onNext: {
+            navBarView.leftDropDown.show()
+        }).addDisposableTo(disposeBag)
+        
+        poolViewModel.miningPoolArrayRxOut.asObservable().subscribe(onNext: { (value) in
+            navBarView.leftDropDown.dataSource = value
+        }).addDisposableTo(disposeBag)
+        
+        navBarView.leftDropDown.selectionAction = { [unowned self] (index: Int, item: String) in
+            self.poolViewModel.poolIndexRxIn.value = index
+        }
+        
+        /* 显示的数据必须从数据处理后来 */
+        Observable.combineLatest(poolViewModel.currentPoolIndexRxOut.asObservable(),
+                                 poolViewModel.miningPoolArrayRxOut.asObservable())
+            .subscribe(onNext: { (poolIndex, poolArray) in
+                if poolIndex < poolArray.count {
+                    let selectPool = poolArray[poolIndex]
+                    navBarView.leftButton.setTitle(selectPool, for: .normal)
+                }
+            }).addDisposableTo(disposeBag)
+        
+        /* 二级: workerGroup */
+        navBarView.leftViceButton.rx.tap.subscribe(onNext: {
+            navBarView.leftViceDropDown.show()
+        }).addDisposableTo(disposeBag)
+        
+        poolViewModel.workerGroupArrayRxOut.asObservable().subscribe(onNext: { (value) in
+            navBarView.leftViceDropDown.dataSource = value
+        }).addDisposableTo(disposeBag)
+        
+        navBarView.leftViceDropDown.selectionAction = { [unowned self] (index: Int, item: String) in
+            self.poolViewModel.groupIndexRxIn.value = index
+        }
+        
+        Observable.combineLatest(poolViewModel.currentGroupIndexRxOut.asObservable(),
+                                 poolViewModel.workerGroupArrayRxOut.asObservable())
+            .subscribe(onNext: { (groupIndex, groupArray) in
+                if groupIndex < groupArray.count {
+                    let selectGroup = groupArray[groupIndex]
+                    navBarView.leftViceButton.setTitle(selectGroup, for: .normal)
+                }
+            }).addDisposableTo(disposeBag)
         
         
         /// SearchBar
+        poolViewModel.initSearch()
         let searchBarView = KindSearchView(frame: CGRect(x: 0, y: 64, width: SCREEN_WIDTH, height: 40))
         self.view.addSubview(searchBarView)
-        searchBarView.searchBar.rx.text.orEmpty.bind(to: kindViewModel.searchRx).addDisposableTo(disposeBag)
+        searchBarView.searchBar.rx.text.orEmpty.bind(to: poolViewModel.searchRx).addDisposableTo(disposeBag)
         (searchBarView.removeCellButton.rx.tap).subscribe(onNext: {
             self.editView.isHidden = self.tableView.isEditing
             self.tableView.isEditing = !self.tableView.isEditing
@@ -64,12 +109,15 @@ class KindsViewController: UIViewController {
         /// tableView
         self.view.addSubview(tableView)
         tableView.register(KindTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
-        kindViewModel.kindArrayRx.drive(tableView.rx.items(cellIdentifier: reuseIdentifier, cellType: KindTableViewCell.self)) { (row, element, cell) in
-            cell.numberLabel.text   = "\(row)"
-            cell.workerIdLabel.text = element.workerId?.uppercased()
-            cell.coinTypeLabel.text = element.coinType
+        poolViewModel.poolArrayRxOut.asDriver().drive(tableView.rx.items(cellIdentifier: reuseIdentifier, cellType: KindTableViewCell.self)) { (row, element, cell) in
+            cell.numberLabel.text    = "\(row + 1)"
+            cell.poolNameLabel.text  = element.MiningPool
+            cell.groupNamelabel.text = element.WorkerGroup
+            cell.workerIdLabel.text  = element.WorkerId
+            cell.coinTypeLabel.text  = element.CoinType
         }.addDisposableTo(disposeBag)
     }
+    
     
     
     //MARK: 编辑

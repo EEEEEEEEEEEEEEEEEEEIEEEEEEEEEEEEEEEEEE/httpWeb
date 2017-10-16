@@ -18,17 +18,33 @@ class WorkerPageMenuViewController: UIViewController, CAPSPageMenuDelegate {
 
         var controllerArray : [UIViewController] = []
         
-        let ethController = WorkerETHViewController()
-        ethController.title = "ETH"
+        let ethController = WorkerBaseViewController()
+        ethController.workerViewModel.coinTypeRxIn.value = EnumCurrency.ETH
+        ethController.title = EnumCurrency.ETH.description
         controllerArray.append(ethController)
         
-        let btcController = WorkerBTCViewController()
-        btcController.title = "BTC"
+        let btcController = WorkerBaseViewController()
+        btcController.workerViewModel.coinTypeRxIn.value = EnumCurrency.BTC
+        btcController.title = EnumCurrency.BTC.description
         controllerArray.append(btcController)
         
-        let ltcController = WorkerLTCViewController()
-        ltcController.title = "LTC"
+        let ltcController = WorkerBaseViewController()
+        ltcController.workerViewModel.coinTypeRxIn.value = EnumCurrency.LTC
+        ltcController.title = EnumCurrency.LTC.description
         controllerArray.append(ltcController)
+        
+//        let ethController = WorkerETHViewController()
+//        ethController.title = "ETH"
+//        controllerArray.append(ethController)
+//        
+//        let btcController = WorkerBTCViewController()
+//        btcController.title = "BTC"
+//        controllerArray.append(btcController)
+//        
+//        let ltcController = WorkerLTCViewController()
+//        ltcController.title = "LTC"
+//        controllerArray.append(ltcController)
+        
 //        ltcController.tabBarItem.badgeValue = "120"
 //        ltcController.tabBarItem.badgeColor = UIColor.red
         

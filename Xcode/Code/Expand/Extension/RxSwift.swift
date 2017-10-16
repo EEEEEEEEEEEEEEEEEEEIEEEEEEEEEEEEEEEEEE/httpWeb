@@ -14,7 +14,7 @@ extension Reactive where Base: UILabel {
     var validationResult: UIBindingObserver<Base, EnumResult> {
         return UIBindingObserver(UIElement: base) { label, result in
             label.textColor = result.textColor
-            label.text = result.description
+            //label.text = result.description
         }
     }
 }

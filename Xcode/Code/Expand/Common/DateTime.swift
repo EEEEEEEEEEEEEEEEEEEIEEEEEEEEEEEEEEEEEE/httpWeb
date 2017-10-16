@@ -50,6 +50,11 @@ class DateTime: NSObject {
         _ = lroundf(Float(secondsInterval/60))
     }
     
-    
-    
+    /// 时间 -> 时间 
+    public func timeStampToInteger(_ timeStamp: NSInteger) -> String {
+        let date = NSDate(timeIntervalSince1970: TimeInterval(timeStamp))
+        let dayTimePeriodFormatter = DateFormatter()
+        dayTimePeriodFormatter.dateFormat = "yyy-MM-dd hh:mm a"
+        return dayTimePeriodFormatter.string(from: date as Date)
+    }
 }

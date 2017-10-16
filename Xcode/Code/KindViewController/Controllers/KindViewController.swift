@@ -13,7 +13,7 @@ import MJRefresh
 
 class KindViewController: UIViewController {
 
-    var kindViewModel = KindViewModel()
+    var kindViewModel = PoolViewModel()
     let disposeBag = DisposeBag()
     
     lazy var collectionView: UICollectionView = {

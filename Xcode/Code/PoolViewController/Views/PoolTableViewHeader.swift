@@ -10,11 +10,12 @@ import UIKit
 
 class PoolTableViewHeader: UIView {
 
-    let numberLabel   = BaseLabel()
-    let poolNameLabel = BaseLabel()
-    let workerIdLabel = BaseLabel()
-    let coinTypeLabel = BaseLabel()
-    let observedLabel = BaseLabel()
+    let numberLabel    = BaseLabel()
+    let poolNameLabel  = BaseLabel()
+    let groupNameLabel = BaseLabel()
+    let workerIdLabel  = BaseLabel()
+    let coinTypeLabel  = BaseLabel()
+    let observedLabel  = BaseLabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,7 +29,7 @@ class PoolTableViewHeader: UIView {
         self.addSubview(numberLabel)
         numberLabel.snp.makeConstraints { make in
             make.top.left.bottom.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.2)
+            make.width.equalToSuperview().multipliedBy(0.12)
         }
         
         poolNameLabel.text = "PoolName"
@@ -43,6 +44,18 @@ class PoolTableViewHeader: UIView {
             make.width.equalToSuperview().multipliedBy(0.2)
         }
         
+        groupNameLabel.text = "GroupName"
+        groupNameLabel.textColor = UIColor.darkGray
+        groupNameLabel.textAlignment = .center
+        groupNameLabel.leftInset = 10
+        groupNameLabel.font = CommonFont14()
+        self.addSubview(groupNameLabel)
+        groupNameLabel.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.left.equalTo(poolNameLabel.snp.right)
+            make.width.equalToSuperview().multipliedBy(0.2)
+        }
+        
         workerIdLabel.text = "WorkerId"
         workerIdLabel.textColor = UIColor.darkGray
         workerIdLabel.textAlignment = .center
@@ -51,23 +64,23 @@ class PoolTableViewHeader: UIView {
         self.addSubview(workerIdLabel)
         workerIdLabel.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
-            make.left.equalTo(poolNameLabel.snp.right)
-            make.width.equalToSuperview().multipliedBy(0.2)
+            make.left.equalTo(groupNameLabel.snp.right)
+            make.width.equalToSuperview().multipliedBy(0.18)
         }
         
         coinTypeLabel.text = "CoinType"
         coinTypeLabel.textColor = UIColor.darkGray
         coinTypeLabel.textAlignment = .center
-        coinTypeLabel.leftInset = 10
+        coinTypeLabel.leftInset = 7
         coinTypeLabel.font = CommonFont14()
         self.addSubview(coinTypeLabel)
         coinTypeLabel.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
             make.left.equalTo(workerIdLabel.snp.right)
-            make.width.equalToSuperview().multipliedBy(0.2)
+            make.width.equalToSuperview().multipliedBy(0.15)
         }
         
-        observedLabel.text = "Observed"
+        observedLabel.text = "Check"
         observedLabel.textColor = UIColor.darkGray
         observedLabel.textAlignment = .center
         observedLabel.leftInset = 10
@@ -76,7 +89,7 @@ class PoolTableViewHeader: UIView {
         observedLabel.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
             make.left.equalTo(coinTypeLabel.snp.right)
-            make.width.equalToSuperview().multipliedBy(0.2)
+            make.width.equalToSuperview().multipliedBy(0.15)
         }
     }
     

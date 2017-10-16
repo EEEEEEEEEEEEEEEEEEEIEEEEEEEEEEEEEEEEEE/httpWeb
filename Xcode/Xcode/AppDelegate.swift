@@ -17,13 +17,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         ProjectConfig.getInstance().initData()
-        let test = SingalRService.getInstance()
-        F2poolService().getLoginCookie()
+        _ = SeriveCenter.getInstance()
+        _ = FMDB.getShared()
+//        F2poolAPI().loginF2pool()
         
 //        self.window?.rootViewController = LoginViewController()
 //        self.window?.rootViewController = PayoutsViewController()
 //        self.window?.rootViewController = WorkerViewController()
-        self.window?.rootViewController = MainViewController()
+        let mainVC = MainViewController()
+        self.window?.rootViewController = mainVC
         
         return true
     }

@@ -10,10 +10,11 @@ import UIKit
 
 class PoolTableViewCell: UITableViewCell {
 
-    let numberLabel   = BaseLabel()
-    let poolNameLabel = BaseLabel()
-    let workerIdLabel = BaseLabel()
-    let coinTypeLabel = BaseLabel()
+    let numberLabel    = BaseLabel()
+    let poolNameLabel  = BaseLabel()
+    let groupNameLabel = BaseLabel()
+    let workerIdLabel  = BaseLabel()
+    let coinTypeLabel  = BaseLabel()
 //    let observedLabel = BaseLabel()
     let observedImage = UIImageView()
     let lineSeparator = UIView()
@@ -40,7 +41,7 @@ class PoolTableViewCell: UITableViewCell {
         self.contentView.addSubview(numberLabel)
         numberLabel.snp.makeConstraints { make in
             make.top.left.bottom.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.2)
+            make.width.equalToSuperview().multipliedBy(0.12)
         }
         
         poolNameLabel.text = "PoolName"
@@ -55,6 +56,18 @@ class PoolTableViewCell: UITableViewCell {
             make.width.equalToSuperview().multipliedBy(0.2)
         }
         
+        groupNameLabel.text = "GroupName"
+        groupNameLabel.textColor = UIColor.darkGray
+        groupNameLabel.textAlignment = .center
+        groupNameLabel.leftInset = 10
+        groupNameLabel.font = CommonFont14()
+        self.contentView.addSubview(groupNameLabel)
+        groupNameLabel.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.left.equalTo(poolNameLabel.snp.right)
+            make.width.equalToSuperview().multipliedBy(0.2)
+        }
+        
         workerIdLabel.text = "WorkerId"
         workerIdLabel.textColor = UIColor.darkGray
         workerIdLabel.textAlignment = .center
@@ -63,7 +76,7 @@ class PoolTableViewCell: UITableViewCell {
         self.contentView.addSubview(workerIdLabel)
         workerIdLabel.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
-            make.left.equalTo(poolNameLabel.snp.right)
+            make.left.equalTo(groupNameLabel.snp.right)
             make.width.equalToSuperview().multipliedBy(0.2)
         }
         
@@ -76,13 +89,13 @@ class PoolTableViewCell: UITableViewCell {
         coinTypeLabel.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
             make.left.equalTo(workerIdLabel.snp.right)
-            make.width.equalToSuperview().multipliedBy(0.2)
+            make.width.equalToSuperview().multipliedBy(0.13)
         }
         
         observedImage.image = UIImage.init(named: "selectOff")
         self.contentView.addSubview(observedImage)
         observedImage.snp.makeConstraints { make in
-            make.left.equalTo(coinTypeLabel.snp.right).offset(30)
+            make.left.equalTo(coinTypeLabel.snp.right).offset(20)
             make.centerY.equalToSuperview()
             make.height.equalTo(25)
             make.width.equalTo(25)

@@ -8,13 +8,26 @@
 
 import UIKit
 import SwiftR
+import RxCocoa
+import RxSwift
+import Dollar
 
 class SingalRService: NSObject {
     
     var signalR: SignalR?
     let signalRHub = SingalRHub()
-    static let instance = SingalRService()
     
+    let disposeBag = DisposeBag()
+    
+    var conntentStatus = Variable<State>(.disconnected)
+    var loginStatus    = Variable<EnumResult>(EnumResult.failed)
+    var loginResult    = LoginResponseModel()
+    var workerGroupInfoListResult = Variable<[LoginWorkerGroupInfo]>([LoginWorkerGroupInfo]())
+    var serivceWorkerInfoArrayRx  = Variable<[WorkerInfo]>([WorkerInfo]())
+    
+    
+    
+    static let instance = SingalRService()
     class func getInstance() -> SingalRService {
         return instance
     }
@@ -22,12 +35,16 @@ class SingalRService: NSObject {
     override init() {
         super.init()
         self.initSignalR()
+        self.initData()
         self.signalRStatus()
-        self.signalRCallBack()
     }
+}
+
+
+extension SingalRService {
     
     //MARK: init SignalR
-    private func initSignalR() {
+    fileprivate func initSignalR() {
         signalR = SignalR(ProjectConfig.getInstance().SignalRServerUrl!)
         signalR?.useWKWebView = true
         signalR?.signalRVersion = .v2_2_1
@@ -37,12 +54,13 @@ class SingalRService: NSObject {
     }
     
     //MARK: SignalR Status
-    private func signalRStatus() {
+    fileprivate func signalRStatus() {
         
         signalR?.error = { error in
             print("CSC ---Error: \(String(describing: error))")
             if let source = error?["source"] as? String, source == "TimeoutException" {
                 print("Connection timed out. Restarting...")
+                self.conntentStatus.value = State.disconnected
             }
         }
         
@@ -52,11 +70,13 @@ class SingalRService: NSObject {
         
         signalR?.connected = {
             print("SR ---connected")
-//            self.signalRHub.RequestWokerList(poolName: "f2pool")
-            self.signalRHub.RequestWokerList(poolName: "ethermine")
+            self.conntentStatus.value = State.connected
+            //            self.signalRHub.RequestWokerList(poolName: EnumPool.F2pool)
+            //            self.signalRHub.RequestWokerList(poolName: "ethermine")
         }
         
         signalR?.disconnected = {
+            self.conntentStatus.value = State.disconnected
             print("SR ---disconnected")
         }
         
@@ -77,9 +97,18 @@ class SingalRService: NSObject {
         }
     }
     
-    //MARK: SignalR CallBack
-    private func signalRCallBack() {
-        
+    //MAKR: 初始化数据
+    fileprivate func initData() {
+        loginStatus.asObservable().distinctUntilChanged{
+            $0.rawValue == $1.rawValue
+        }.subscribe(onNext: { (value) in
+            if value == EnumResult.success {
+                self.signalRHub.RequestWorkerGroupList()
+            }
+        }).addDisposableTo(disposeBag)
     }
-    
 }
+
+
+
+

@@ -2,79 +2,129 @@
 //  F2poolService.swift
 //  Xcode
 //
-//  Created by Hanxun on 2017/9/23.
+//  Created by Hanxun on 2017/9/25.
 //  Copyright © 2017年 Simon. All rights reserved.
 //
 
 import UIKit
-import Alamofire
+import RxCocoa
+import RxSwift
+
 
 class F2poolService: NSObject {
     
-    /// 账号信息
-    let userKey = "9587ce626fc78670816aeda91d531a36"
-    let account = "atm"
-    let baseLognUrl = "https://www.f2pool.com/mining-user/"
+    static let instance = F2poolService()
+    class func getInstance() -> F2poolService {
+        return instance
+    }
+    
+    let currentIDType = Variable<EnumF2pIDType>(EnumF2pIDType.atm)
+    let f2poolApi     = F2poolAPI()
+    let f2poolAtm2Api = F2poolAPI()
+    let disposeBag = DisposeBag()
+    
+    // 这两个是 atm atm2 公用的值
+    var workerArrayRxOut  = Variable<[WorkerModel]>([WorkerModel]())
+    var payoutArrayRxOut  = Variable<[PayoutsModel]>([PayoutsModel]())
     
     
-    /// 从登陆获取Cookie
-    public func getLoginCookie() {
+    
+    override init() {
+        super.init()
         
-        let loginString = baseLognUrl + userKey
-        let loginUrl = URL(string: loginString)
+        /* 登陆成功后请求一次 */
         
-        Alamofire.request(loginString).responseJSON { response in
-            
-            let  headerFields = response.response?.allHeaderFields as? [String: String]
-            let  URL = response.request?.url
-            let cookies = HTTPCookie.cookies(withResponseHeaderFields: headerFields!, for: URL!)
-            Alamofire.SessionManager.default.session.configuration.httpCookieStorage?.setCookies(cookies, for: loginUrl, mainDocumentURL: nil)
-//                print(cookies)
-            Alamofire.request(loginString).responseJSON { response in
-                
-                let  headerFields = response.response?.allHeaderFields as? [String: String]
-                let  URL = response.request?.url
-                let cookies = HTTPCookie.cookies(withResponseHeaderFields: headerFields!, for: URL!)
-                Alamofire.SessionManager.default.session.configuration.httpCookieStorage?.setCookies(cookies, for: loginUrl, mainDocumentURL: nil)
-                //                print(cookies)
+        f2poolApi.f2poolLoginStatus.asObservable().subscribe(onNext: { (status) in
+            if status == true {
+                self.f2poolApi.getF2poolWorkerList()
+                self.f2poolApi.getF2poolpayoutList()
+            }
+        }).addDisposableTo(disposeBag)
+        
+        f2poolAtm2Api.f2poolLoginStatus.asObservable().subscribe(onNext: { (status) in
+            if status == true {
+                self.f2poolAtm2Api.getF2poolWorkerList()
+                self.f2poolAtm2Api.getF2poolpayoutList()
+            }
+        }).addDisposableTo(disposeBag)
+        
+        
+        /* 对 atm atm2值的选择 */
+        
+        Observable.combineLatest(currentIDType.asObservable(),
+                                 f2poolApi.workerArrayRxOut.asObservable(),
+                                 f2poolAtm2Api.workerArrayRxOut.asObservable())
+            .subscribe(onNext: { (currentID, atmWorkerArray, atm2WorkerArray) in
+                switch currentID {
+                case EnumF2pIDType.atm:
+                    self.workerArrayRxOut.value = atmWorkerArray
+                case EnumF2pIDType.atm2:
+                    self.workerArrayRxOut.value = atm2WorkerArray
+                }
+            }).addDisposableTo(disposeBag)
+        
+        Observable.combineLatest(currentIDType.asObservable(),
+                                 f2poolApi.payoutArrayRxOut.asObservable(),
+                                 f2poolAtm2Api.payoutArrayRxOut.asObservable())
+            .subscribe(onNext: { (currentID, atmPayoutArray, atm2PayoutArray) in
+                switch currentID {
+                case EnumF2pIDType.atm:
+                    self.payoutArrayRxOut.value = atmPayoutArray
+                case EnumF2pIDType.atm2:
+                    self.payoutArrayRxOut.value = atm2PayoutArray
+                }
+            }).addDisposableTo(disposeBag)
+    }
+    
+    // 刷新
+    func refreshData(account: String, key: String) {
+        
+        if account.isEmpty || key.isEmpty {
+            return
+        }
+        
+        let newBuffType: EnumF2pIDType = EnumF2pIDType(rawValue: account)!
+        switch newBuffType {
+        case EnumF2pIDType.atm:
+            self.f2poolApi.account = account.lowercased()
+            self.f2poolApi.userKey = key.lowercased()
+            if self.f2poolApi.f2poolLoginStatus.value == true {
+                self.f2poolApi.getF2poolWorkerList()
+                self.f2poolApi.getF2poolpayoutList()
+            } else {
+                self.f2poolApi.loginF2pool()
+            }
+        case EnumF2pIDType.atm2:
+            self.f2poolAtm2Api.account = account.lowercased()
+            self.f2poolAtm2Api.userKey = key.lowercased()
+            if self.f2poolAtm2Api.f2poolLoginStatus.value == true {
+                self.f2poolAtm2Api.getF2poolWorkerList()
+                self.f2poolAtm2Api.getF2poolpayoutList()
+            } else {
+                self.f2poolAtm2Api.loginF2pool()
             }
         }
-        
-        
+        currentIDType.value = newBuffType
     }
     
-    
-    /// 原生方法
-    public func getLoginCookies() {
-        
-        let loginUrl = baseLognUrl + userKey
-//        let url = URL(string: loginUrl)
-//        let jar = HTTPCookieStorage.shared
-//        let cookieHeaderField = ["Set-Cookie": "key=value"]
-//        let cookies = HTTPCookie.cookies(withResponseHeaderFields: cookieHeaderField, for: url!)
-//        jar.setCookies(cookies, for: url, mainDocumentURL: url)
-//        
-//        var request = URLRequest(url: url!)
-//        let headers = HTTPCookie.requestHeaderFields(with: cookies)
-//        request.allHTTPHeaderFields = headers
-        
-        if let tmpURL = URL(string: loginUrl) {
-            var request = URLRequest(url: tmpURL)
-            request.httpMethod = "GET"
-            let sessionConfig = URLSessionConfiguration.default
-            sessionConfig.timeoutIntervalForRequest = 20
-            let session = URLSession(configuration: sessionConfig)
-//            let body = para?.data(using: String.Encoding.utf8)
-            let task = session.uploadTask(with: request, from: nil, completionHandler: {
-                (data, response, error) ->Void in
-                print("123")
-            })
-            task.resume()
-        }else{
-//            result(nil, "请求地址出错")
-        }
-    }
 }
+
+
+
+enum EnumF2pIDType: String {
+    case atm  = "Atm"
+    case atm2 = "Atm2"
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

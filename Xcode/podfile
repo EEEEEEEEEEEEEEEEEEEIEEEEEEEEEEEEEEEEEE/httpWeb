@@ -32,6 +32,9 @@ def pods
     pod 'PopupDialog', '~> 0.5.4'
     pod 'MBProgressHUD', '~> 1.0.0'
     pod 'SwiftR', '~> 0.13.1'
+    pod 'Dollar', '~> 6.2.1'
+    pod 'DropDown', '~> 2'
+    pod 'FMDB', '~> 2.7.2'
 end 
 
 target 'Xcode' do

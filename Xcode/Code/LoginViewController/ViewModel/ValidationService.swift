@@ -10,11 +10,12 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-// 模拟假请求
+// 模拟假请求 description
 
 class ValidationService {
     static let instance = ValidationService()
     
+    /*
     func login(_ username: String, password: String) -> Observable<EnumResult> {
         if username == password {
             return .just(.success(message: "登陆成功"))
@@ -40,5 +41,5 @@ class ValidationService {
             return .just(.empty)
         }
         return .just(.failed(message: "号码无效"))
-    }
+    } */
 }

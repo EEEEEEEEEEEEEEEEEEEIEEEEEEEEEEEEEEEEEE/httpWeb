@@ -4,7 +4,12 @@ PODS:
     - ChameleonFramework/Default (= 2.1.0)
   - ChameleonFramework/Default (2.1.0)
   - DateToolsSwift (2.0.3)
+  - Dollar (6.2.1)
+  - DropDown (2)
   - ESTabBarController-swift (2.4)
+  - FMDB (2.7.2):
+    - FMDB/standard (= 2.7.2)
+  - FMDB/standard (2.7.2)
   - Hero (0.3.6)
   - IQKeyboardManagerSwift (4.0.10)
   - MBProgressHUD (1.0.0)
@@ -37,7 +42,10 @@ DEPENDENCIES:
   - Alamofire (~> 4.5.0)
   - ChameleonFramework (~> 2.1.0)
   - DateToolsSwift
+  - Dollar (~> 6.2.1)
+  - DropDown (~> 2)
   - ESTabBarController-swift
+  - FMDB (~> 2.7.2)
   - Hero
   - IQKeyboardManagerSwift (~> 4.0.10)
   - MBProgressHUD (~> 1.0.0)
@@ -61,7 +69,10 @@ SPEC CHECKSUMS:
   Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
   DateToolsSwift: bf69bf9056d9e53c5c03f06e51f219b9b8b02f9e
+  Dollar: 197e92d0fc1ded259363f33f883704b7b550472b
+  DropDown: 744784d9c9aa505100e942c16acd05430cbb2f0a
   ESTabBarController-swift: af496895039ba10ae60bf825473c45f23fc5c8b6
+  FMDB: 6198a90e7b6900cfc046e6bc0ef6ebb7be9236aa
   Hero: d3c6f4dd80cdcdbb339be64e57ae3b5c3ab9938c
   IQKeyboardManagerSwift: 75ba21a23794a1e6b6fe6d9a267ea17f80e06771
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
@@ -81,6 +92,6 @@ SPEC CHECKSUMS:
   SwiftR: c639ef7119e84271f7590b4ec1a9e4650c863a2b
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
 
-PODFILE CHECKSUM: 130fc76f464060bda8e33d35e4abe72af7b74ade
+PODFILE CHECKSUM: 8bea82a779ac4603e4eca981977eb52451ec6e49
 
 COCOAPODS: 1.2.1
