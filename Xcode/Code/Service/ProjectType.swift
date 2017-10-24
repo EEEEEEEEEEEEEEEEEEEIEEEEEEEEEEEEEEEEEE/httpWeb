@@ -103,5 +103,20 @@ extension EnumPool {
 
 
 
+// 添加/删除 请求时返回的状态
+enum EnumHubResult: Int {
+    case success = 0
+    case fail    = 99
+}
+
+enum EnumEditType: Int {
+    case Null    = 0
+    case Add     = 1
+    case Delete  = 2
+}
+
+
+
+
 
 

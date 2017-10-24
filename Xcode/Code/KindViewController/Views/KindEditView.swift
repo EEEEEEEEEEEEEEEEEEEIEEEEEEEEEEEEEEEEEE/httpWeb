@@ -11,9 +11,9 @@ import UIKit
 class KindEditView: UIView {
 
     let selectAllButton = UIButton(type: UIButtonType.custom)
-    let selectOneButton = UIButton(type: UIButtonType.custom)
-    let cancelButton    = UIButton(type: UIButtonType.custom)
+    let insertButton    = UIButton(type: UIButtonType.custom)
     let deleteButton    = UIButton(type: UIButtonType.custom)
+    let cancelButton    = UIButton(type: UIButtonType.custom)
     
     //MARK:*********☆*********☆*********☆*********☆*********☆*********☆*********
     //MARK:required init?(coder aDecoder: NSCoder)
@@ -45,23 +45,13 @@ class KindEditView: UIView {
         }
         
         
-        selectOneButton.titleLabel?.textColor = UIColor.black
-        selectOneButton.setTitle(NSLocalizedString("SelectOne", comment: "单选"), for: .normal)
-        selectOneButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
-        self.addSubview(selectOneButton)
-        selectOneButton.snp.makeConstraints { make in
+        insertButton.titleLabel?.textColor = UIColor.black
+        insertButton.setTitle(NSLocalizedString("Insert", comment: "插入"), for: .normal)
+        insertButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        self.addSubview(insertButton)
+        insertButton.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
             make.left.equalTo(selectAllButton.snp.right)
-            make.width.equalToSuperview().multipliedBy(0.23)
-        }
-        
-        cancelButton.titleLabel?.textColor = UIColor.black
-        cancelButton.setTitle(NSLocalizedString("Cancel", comment: "取消"), for: .normal)
-        cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
-        self.addSubview(cancelButton)
-        cancelButton.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview()
-            make.left.equalTo(selectOneButton.snp.right)
             make.width.equalToSuperview().multipliedBy(0.23)
         }
         
@@ -72,7 +62,18 @@ class KindEditView: UIView {
         self.addSubview(deleteButton)
         deleteButton.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
-            make.left.equalTo(cancelButton.snp.right)
+            make.left.equalTo(insertButton.snp.right)
+            make.width.equalToSuperview().multipliedBy(0.23)
+        }
+        
+        
+        cancelButton.titleLabel?.textColor = UIColor.black
+        cancelButton.setTitle(NSLocalizedString("Cancel", comment: "取消"), for: .normal)
+        cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        self.addSubview(cancelButton)
+        cancelButton.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.left.equalTo(deleteButton.snp.right)
             make.width.equalToSuperview().multipliedBy(0.23)
         }
     }

@@ -4,7 +4,7 @@
 //
 //  Created by Hanxun on 2017/9/25.
 //  Copyright © 2017年 Simon. All rights reserved.
-//  相当于选择器
+//
 
 import UIKit
 import RxCocoa
@@ -33,10 +33,12 @@ class SeriveCenter: NSObject {
     
     /// ouput
     
-    // 服务器 本地 Data (包含各Pool)
-    var serivceArrayRx        = Variable<[WorkerInfo]>([WorkerInfo]())
-    var localAllArrayRxOut    = Variable<[WorkerInfo]>([WorkerInfo]())
-    var localSelectArrayRxOut = Variable<[WorkerInfo]>([WorkerInfo]())
+    // 服务器 本地 Data (包含各Pool) // 当前数据库数据，这个根据一二级选择
+    var currentSerivceArrayRxOut = Variable<[WorkerInfo]>([WorkerInfo]())
+    var currentLocalDBArrayRxOut = Variable<[WorkerInfo]>([WorkerInfo]())
+    var currentAllWorkerInfoArrayRxOut    = Variable<[WorkerInfo]>([WorkerInfo]())
+    var currentSelectWorkerInfoArrayRxOut = Variable<[WorkerInfo]>([WorkerInfo]())
+    
     
     // 当前的Worker和Payout，这个根据一二级选择
     var currentWorkerArrayRxOut  = Variable<[WorkerModel]>([WorkerModel]())
@@ -69,11 +71,15 @@ class SeriveCenter: NSObject {
     var workerGroupArrayInfoRxOut = Variable<LoginWorkerGroupInfo>(LoginWorkerGroupInfo())
     
     
+    // 增加/删除 WorkerInfo 时，请求服务器返回的结果
+    var requestChangeWokersResult = Variable<ResultInfo>(ResultInfo())
+    
+    
     override init() {
         super.init()
         _ = SingalRService.getInstance()
         self.initData()
-//        self.initService()
+        
         self.initSelectPoolAndGroup()
         self.initGetSignalRData()
     }
@@ -84,11 +90,91 @@ extension SeriveCenter {
     
     public func initData() {
         
-        // 得到 localSelectArrayRxOut 
+        // 得到 currentSelectWorkerInfoArrayRxOut
         singalR.serivceWorkerInfoArrayRx.asObservable().subscribe(onNext: { (value) in
-            self.serivceArrayRx.value        = value
-            self.localAllArrayRxOut.value    = value
-            self.localSelectArrayRxOut.value = value
+            
+            /* 容错判断 */
+            if value.count < 1 { return }
+            if ((self.workerGroupArrayInfoRxOut.value.MiningPool?.characters.count)! < 1) ||
+                ((self.workerGroupArrayInfoRxOut.value.WorkerGroup?.characters.count)! < 1) {
+                return
+            }
+            if (value[0].MiningPool != self.workerGroupArrayInfoRxOut.value.MiningPool) ||
+                (value[0].WorkerGroup != self.workerGroupArrayInfoRxOut.value.WorkerGroup) {
+                return
+            }
+            self.currentSerivceArrayRxOut.value = value
+        }).addDisposableTo(disposeBag)
+        
+        
+        // 得到服务器和数据库数据后, 更新数据库和数据
+        Observable.combineLatest(currentSerivceArrayRxOut.asObservable().skipWhile({$0.count < 1}),
+                                 currentLocalDBArrayRxOut.asObservable())
+            .subscribe(onNext: { (serivceArray, localDBArray) in
+                
+                /* 容错判断 */
+                let currentAllWorkerInfoArray = self.workerGroupArrayInfoRxOut.value
+                if (currentAllWorkerInfoArray.MiningPool != serivceArray[0].MiningPool) ||
+                    (currentAllWorkerInfoArray.WorkerGroup != serivceArray[0].WorkerGroup) {
+                    return
+                }
+                if serivceArray.count < 1 { return }
+                if localDBArray.count > 0 {
+                    if (localDBArray[0].MiningPool != serivceArray[0].MiningPool) ||
+                        (localDBArray[0].WorkerGroup != serivceArray[0].WorkerGroup) {
+                        return
+                    }
+                }
+                
+                
+                /* 更新数据 */
+                var newArray        = [WorkerInfo]()
+                newArray.append(contentsOf: serivceArray)
+                var orgBuffArray        = [WorkerInfo]()
+                orgBuffArray.append(contentsOf: localDBArray)
+                
+                orgBuffArray.forEach { (oldItem) in
+                    let indexNew = newArray.index(where: { (newItem) -> Bool in
+                        
+                        /* 旧数据有 && 新数据有 -> (这里不需要改变) */
+                        if oldItem.WorkerId == newItem.WorkerId {
+                            let indexNew = newArray.index(where: { (item) -> Bool in
+                                item.WorkerId == newItem.WorkerId
+                            })
+                            // 剩下来的是需要增加的
+                            newArray.remove(at: indexNew!)
+                            return true
+                        } else {
+                            return false
+                        }
+                    })
+                    
+                    /* 旧数据有 && 新数据没有 -> 删除 */
+                    if indexNew == nil {
+                        let indexOld = orgBuffArray.index(where: { (item) -> Bool in
+                            item.WorkerId == oldItem.WorkerId
+                        })
+                        orgBuffArray.remove(at: indexOld!)
+                        FMDB.getShared().removeSingleDataFromWorkerInfoTable(objectData: oldItem)
+                    }
+                }
+                
+                /* 旧数据没有 && 新数据有 -> 增加 */
+                orgBuffArray.append(contentsOf: newArray)
+                FMDB.getShared().insertMultDataToWorkerInfoTable(arrayData: newArray)
+                self.currentAllWorkerInfoArrayRxOut.value = orgBuffArray
+                
+            }).addDisposableTo(disposeBag)
+        
+        // 过滤出勾选中的
+        currentAllWorkerInfoArrayRxOut.asObservable().subscribe(onNext: { (allArray) in
+            var selectWorkerInfoArray: [WorkerInfo] = [WorkerInfo]()
+            allArray.forEach { (element) in
+                if element.UserFlag == true {
+                    selectWorkerInfoArray.append(element)
+                }
+            }
+            self.currentSelectWorkerInfoArrayRxOut.value = selectWorkerInfoArray
         }).addDisposableTo(disposeBag)
         
         
@@ -131,7 +217,7 @@ extension SeriveCenter {
         
         
         // 以后还要观察阀值
-        Observable.combineLatest(localSelectArrayRxOut.asObservable(),
+        Observable.combineLatest(currentSelectWorkerInfoArrayRxOut.asObservable(),
                                  currentWorkerArrayRxOut.asObservable())
             .subscribe(onNext: { (localSelectArray, currentWorkerArray) in
                 
@@ -177,114 +263,19 @@ extension SeriveCenter {
                 self.lowHRNumberRxOut.value = newLowHRWorkerArray.count
                 
             }).addDisposableTo(disposeBag)
-        
-        
-        /*
-        // WorkerInfo 过滤条件: Pool选择
-        let singalRSerivceHub = SingalRService.getInstance().signalRHub
-        Observable.combineLatest(poolRxIn.asObservable(),
-                                     singalRSerivceHub.ethermineWorkerInfoArrayRx.asObservable(),
-                                     singalRSerivceHub.f2poolWorkerInfoArrayRx.asObservable())
-            .subscribe(onNext: { (poolSelect, ethermineWorkerInfoArray, f2poolWorkerInfoArray) in
-                switch poolSelect {
-                case EnumPool.Ethermine:
-                    self.serivceArrayRx.value = ethermineWorkerInfoArray
-                    self.localAllArrayRxOut.value = ethermineWorkerInfoArray
-                    self.localSelectArrayRxOut.value = ethermineWorkerInfoArray
-                case EnumPool.F2pool:
-                    self.serivceArrayRx.value = f2poolWorkerInfoArray
-                    self.localAllArrayRxOut.value = ethermineWorkerInfoArray
-                    self.localSelectArrayRxOut.value = ethermineWorkerInfoArray
-                }
-            }).addDisposableTo(disposeBag)
-        
-        
-        // Payout 过滤条件: Pool选择
-        Observable.combineLatest(poolRxIn.asObservable(),
-                                     EthermineService.getInstance().payoutArrayRxOut.asObservable(),
-                                     F2poolService.getInstance().payoutArrayRxOut.asObservable())
-            .subscribe(onNext: { (poolSelect, etherminePayoutArray, f2poolPayoutArray) in
-                switch poolSelect {
-                case EnumPool.Ethermine:
-                    self.payoutArrayRxOut.value = etherminePayoutArray
-                case EnumPool.F2pool:
-                    self.payoutArrayRxOut.value = f2poolPayoutArray
-                }
-            }).addDisposableTo(disposeBag)
-        
-        
-        
-        
-        // WorkerModel 过滤条件: 网站选择、本地数据打勾的
-        Observable.combineLatest(poolRxIn.asObservable(),
-                                 localSelectArrayRxOut.asObservable(),
-                                 EthermineService.getInstance().workerArrayRxOut.asObservable(),
-                                 F2poolService.getInstance().workerArrayRxOut.asObservable())
-            .subscribe(onNext: { (poolSelect, localSelectArray, ethermineWorkerArray, f2poolWorkerArray) in
-                    var sourceArray = [WorkerModel]()
-                    switch poolSelect {
-                    case EnumPool.Ethermine:
-                        sourceArray = ethermineWorkerArray
-                    case EnumPool.F2pool:
-                        sourceArray = f2poolWorkerArray
-                    }
-                    let sourceWorkerIdArray: [String] = sourceArray.map({ $0.worker! })
-                    
-                    var newWorkerArray      = [WorkerModel]()
-                    var newOkWorkerArray    = [WorkerModel]()
-                    var newOffWorkerArray   = [WorkerModel]()
-                    var newNoRepWorkerArray = [WorkerModel]()
-                    var newLowHRWorkerArray = [WorkerModel]()
-                    
-                    
-                    localSelectArray.forEach { (element) in
-                        if $.contains(sourceWorkerIdArray, value: element.WorkerId!) {
-                            let newWorkerModel: WorkerModel = sourceArray[sourceWorkerIdArray.index(of: element.WorkerId!)!]
-                            
-                            if newWorkerModel.repHR! >= 150000000.0 {
-                                newWorkerModel.workerStatus = EnumWorkerStatus.OK
-                                newOkWorkerArray.append(newWorkerModel)
-                            } else if newWorkerModel.repHR! > 0.0 {
-                                newWorkerModel.workerStatus = EnumWorkerStatus.LowHR
-                                newLowHRWorkerArray.append(newWorkerModel)
-                            } else {
-                                newWorkerModel.workerStatus = EnumWorkerStatus.NoRep
-                                newNoRepWorkerArray.append(newWorkerModel)
-                            }
-                            newWorkerArray.append(newWorkerModel)
-                        } else {
-                            let newOffModel = WorkerModel()
-                            newOffModel.workerStatus = EnumWorkerStatus.OFF
-                            newOffModel.worker = element.WorkerId
-                            newOffWorkerArray.append(newOffModel)
-                        }
-                    }
-                    
-                    self.workerArrayRxOut.value = newWorkerArray
-                    self.okArrayRxOut.value     = newOkWorkerArray
-                    self.offArrayRxOut.value    = newOffWorkerArray
-                    self.noRepArrayRxOut.value  = newNoRepWorkerArray
-                    self.lowHRArrayRxOut.value  = newLowHRWorkerArray
-                    
-                    self.okNumberRxOut.value    = newOkWorkerArray.count
-                    self.offNumberRxOut.value   = newOffWorkerArray.count
-                    self.noRepNumberRxOut.value = newNoRepWorkerArray.count
-                    self.lowHRNumberRxOut.value = newLowHRWorkerArray.count
-            }).addDisposableTo(disposeBag)  */
-    }
-    
-    public func initService() {
-        
-        SingalRService.getInstance().conntentStatus.asObservable().subscribe(onNext: { (status) in
-            if status == State.connected {
-//                SingalRService.getInstance().RequestWokerList(poolName: EnumPool.Ethermine)
-            }
-        }).addDisposableTo(disposeBag)
     }
 }
 
 
 
+
+/* DataBase */
+extension SeriveCenter {
+    
+    public func databaseOfSelectMarkChange(object: WorkerInfo) {
+        FMDB.getShared().modifySingleDataFromWorkerInfoTableWithWorkerID(objectData: object)
+    }
+}
 
 
 /* F2pool */
@@ -304,7 +295,7 @@ extension SeriveCenter {
     /* 登陆 */
     func login(_ username: String, password: String) -> Observable<EnumResult> {
         singalR.signalRHub.RequestLoginAuth(userID: username, userPass: password)
-        return singalR.loginStatus.asObservable()
+        return singalR.loginStatus.asObservable().skip(1)
     }
     
     
@@ -379,14 +370,27 @@ extension SeriveCenter {
                     print("\(workreGroupArrayInfoBuff)")
                 }
         }).addDisposableTo(disposeBag)
+        
+        
+        // 增加/删除 WorkerInfo 时，请求服务器返回的结果 绑定
+        singalR.requestChangeWokersResult.asObservable().subscribe(onNext: { (value) in
+            self.requestChangeWokersResult.value = value
+        }).addDisposableTo(disposeBag)
+        
     }
     
     /* 选择矿池与组后，对服务器数据请求, 以及对矿池网站的选择 */
     func initGetSignalRData() {
         workerGroupArrayInfoRxOut.asObservable().subscribe(onNext: { (select) in
+            
             if (select.MiningPool == nil) || (select.WorkerGroup == nil) {
                 return
             }
+            
+            // 从数据库提取数据
+            FMDB.getShared().selectMultDataFromWorkerInfoTable(miningPool: select.MiningPool!,
+                                                               group: select.WorkerGroup!)
+            
             // *** 这里带的参数要注意大小写
             self.singalR.signalRHub.RequestWokerList(poolName: select.MiningPool!, groupName: select.WorkerGroup!)
             
@@ -403,13 +407,16 @@ extension SeriveCenter {
                 print("其它")
             }
             
-            
-            
         }).addDisposableTo(disposeBag)
     }
     
     
     
+    /* 增加/删除WorkerInfo */
+    public func syncToSerivce(workerInfoArray: [WorkerInfo]) {
+        singalR.signalRHub.RequestChangeWokers(workList: workerInfoArray,
+                                               password: ProjectConfig.getInstance().UserPassword!) // "i12345"
+    }
     
     
     /*

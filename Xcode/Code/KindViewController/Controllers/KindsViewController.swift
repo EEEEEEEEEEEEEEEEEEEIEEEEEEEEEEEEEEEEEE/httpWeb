@@ -10,7 +10,7 @@ import UIKit
 import RxCocoa
 import RxSwift
 
-class KindsViewController: UIViewController {
+class KindsViewController: BaseViewController {
 
     let disposeBag = DisposeBag()
     var poolViewModel = PoolViewModel()
@@ -43,7 +43,7 @@ class KindsViewController: UIViewController {
         navBarView.titleLabel.text = "Config"
         navBarView.leftButton.setTitle("PoolNull ", for: .normal)
         navBarView.leftViceButton.setTitle("GroupNull ", for: .normal)
-        navBarView.rightButton.setTitle("", for: .normal)
+        navBarView.rightButton.setTitle("Edit", for: .normal)
         self.view.addSubview(navBarView)
         
         /* 一级: pool */
@@ -91,18 +91,21 @@ class KindsViewController: UIViewController {
                 }
             }).addDisposableTo(disposeBag)
         
+        navBarView.rightButton.rx.tap.subscribe(onNext: { (value) in
+            self.editView.isHidden = self.tableView.isEditing
+            self.tableView.isEditing = !self.tableView.isEditing
+        }).addDisposableTo(disposeBag)
+        
+        
         
         /// SearchBar
         poolViewModel.initSearch()
         let searchBarView = KindSearchView(frame: CGRect(x: 0, y: 64, width: SCREEN_WIDTH, height: 40))
         self.view.addSubview(searchBarView)
+        
         searchBarView.searchBar.rx.text.orEmpty.bind(to: poolViewModel.searchRx).addDisposableTo(disposeBag)
-        (searchBarView.removeCellButton.rx.tap).subscribe(onNext: {
-            self.editView.isHidden = self.tableView.isEditing
-            self.tableView.isEditing = !self.tableView.isEditing
-        }).addDisposableTo(disposeBag)
         searchBarView.searchBar.rx.cancelButtonClicked.subscribe(onNext: {
-            print("取消编辑")
+            print("取消搜索编辑")
         }).addDisposableTo(disposeBag)
         
         
@@ -126,29 +129,52 @@ class KindsViewController: UIViewController {
         editView.isHidden = true
         self.view.addSubview(editView)
         
+        // 全选
         editView.selectAllButton.rx.tap.subscribe(onNext: {
-//            for i in 0..<FavoriteViewModel.getInstance().conditions.count {
-//                let indexPath:IndexPath = IndexPath(row: i, section: 0)
-//                mainTableView.selectRow(at: indexPath, animated: true, scrollPosition: UITableViewScrollPosition.bottom)
-//            }
+            for i in 0..<self.poolViewModel.poolArrayRxOut.value.count {
+                let indexPath: IndexPath = IndexPath(row: i, section: 0)
+                self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: UITableViewScrollPosition.bottom)
+            }
         }).addDisposableTo(disposeBag)
         
-        editView.selectOneButton.rx.tap.subscribe(onNext: {
-//            for i in 0..<FavoriteViewModel.getInstance().conditions.count {
-//                let indexPath:IndexPath = IndexPath(row: i, section: 0)
-//                mainTableView.deselectRow(at: indexPath, animated: true)
-//            }
+        // 插入
+        editView.insertButton.rx.tap.subscribe(onNext: {
+            let editWorkerInfoViewController = EditWorkerInfoViewController(nibName: "EditWorkerInfoViewController", bundle: nil)
+            self.present(editWorkerInfoViewController, animated: true, completion: nil)
+            
         }).addDisposableTo(disposeBag)
         
+        // 删除
+        editView.deleteButton.rx.tap.subscribe(onNext: {
+            
+            var deleteItemBuff = [WorkerInfo]()
+            if let selectItems = self.tableView.indexPathsForSelectedRows {
+                for indexPath in selectItems {
+                    let objectData = self.poolViewModel.poolArrayRxOut.value[indexPath.row]
+                    objectData.ActionFlag = EnumEditType.Delete.rawValue
+                    deleteItemBuff.append(objectData)
+                }
+                self.poolViewModel.syncDataHandle(deleteBuff: deleteItemBuff)
+                self.showHUD(message: "删除中...")
+            }
+            self.tableView.setEditing(false, animated: true)
+            self.editView.isHidden = true
+            
+        }).addDisposableTo(disposeBag)
+        
+        // 退出编辑
         editView.cancelButton.rx.tap.subscribe(onNext: {
             self.tableView.setEditing(false, animated: true)
             self.editView.isHidden = true
         }).addDisposableTo(disposeBag)
         
-        editView.deleteButton.rx.tap.subscribe(onNext: {
-            self.tableView.setEditing(false, animated: true)
-            self.editView.isHidden = true
-            //
+        
+        // 删除后的返回状态
+        poolViewModel.requestChangeWokersResult.asObservable().skip(1).subscribe(onNext: { (result) in
+            guard (result.ResultId != nil) && (result.Message != nil) else {
+                return
+            }
+            self.changeHUDMessage(message: "\(result.Message!)", showTime: 2)
         }).addDisposableTo(disposeBag)
     }
 }

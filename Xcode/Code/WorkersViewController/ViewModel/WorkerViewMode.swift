@@ -24,12 +24,6 @@ class WorkerViewMode: NSObject {
     var currentWorkerArrayRx    = Variable<[WorkerModel]>([WorkerModel]())  // 当前显示的数据(可能是off,noRep,LowHR等)
     var currentWorkerArrayRxOut = Variable<[WorkerModel]>([WorkerModel]())  // 过滤后的数据,真正显示数据
     
-//    var workerArrayRxOut = Variable<[WorkerModel]>([WorkerModel]()) //除OFF都包含
-//    var okArrayRxOut     = Variable<[WorkerModel]>([WorkerModel]())
-//    var offArrayRxOut    = Variable<[WorkerModel]>([WorkerModel]())
-//    var noRepArrayRxOut  = Variable<[WorkerModel]>([WorkerModel]())
-//    var lowHRArrayRxOut  = Variable<[WorkerModel]>([WorkerModel]())
-    
     var okNumberRxOut    = Variable<Int>(0)
     var offNumberRxOut   = Variable<Int>(0)
     var noRepNumberRxOut = Variable<Int>(0)
@@ -60,7 +54,6 @@ class WorkerViewMode: NSObject {
                     self.currentWorkerArrayRx.value = allArray
                 case .Normal:
                     self.currentWorkerArrayRx.value = okArray
-                    
                 case .UnReport:
                     self.currentWorkerArrayRx.value = noRepArray
                 case .LowHR:
@@ -69,20 +62,15 @@ class WorkerViewMode: NSObject {
                     self.currentWorkerArrayRx.value = offArray
                 }
                 
-//                self.okNumberRxOut.value    = self.seriveCenter.okNumberRxOut.value
-//                self.offNumberRxOut.value   = self.seriveCenter.offNumberRxOut.value
-//                self.noRepNumberRxOut.value = self.seriveCenter.noRepNumberRxOut.value
-//                self.lowHRNumberRxOut.value = self.seriveCenter.lowHRNumberRxOut.value
-                
             }).addDisposableTo(disposeBag)
         
         /* 数据统计 */
         Observable.combineLatest(coinTypeRxIn.asObservable(),
                                  seriveCenter.workerGroupArrayInfoRxOut.asObservable(),
-                                 seriveCenter.okNumberRxOut.asObservable(),
-                                 seriveCenter.offNumberRxOut.asObservable(),
-                                 seriveCenter.noRepNumberRxOut.asObservable(),
-                                 seriveCenter.lowHRNumberRxOut.asObservable())
+                                 seriveCenter.okNumberRxOut.asObservable().distinctUntilChanged(),
+                                 seriveCenter.offNumberRxOut.asObservable().distinctUntilChanged(),
+                                 seriveCenter.noRepNumberRxOut.asObservable().distinctUntilChanged(),
+                                 seriveCenter.lowHRNumberRxOut.asObservable().distinctUntilChanged())
             .subscribe(onNext: { (coinType, selectGroupInfo, okInt, offInt, noRepInt, lowHRInt) in
                 
                 // 当前选择的组中没有本视图控制器的币种

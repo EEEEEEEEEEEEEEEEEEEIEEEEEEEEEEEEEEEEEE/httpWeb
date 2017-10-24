@@ -31,12 +31,20 @@ class SingalRHub: NSObject {
             }
             
             try hubProxy.invoke("RequestLoginAuth", arguments: [userID, userPass]){ (result, error) in
-                if let loginResultValue = Mapper<LoginResponseModel>().map(JSONObject: result) {
-                    SingalRService.getInstance().loginStatus.value = EnumResult.success
-                    SingalRService.getInstance().loginResult = loginResultValue
-                } else {
+                
+                guard let loginResultValue = Mapper<LoginResponseModel>().map(JSONObject: result) else {
+                    
                     print("Hub === 登陆无返回值")
+                    SingalRService.getInstance().loginStatus.value = EnumResult.failed
+                    return
                 }
+                
+                if (loginResultValue.UserName?.characters.count)! > 1 {
+                    SingalRService.getInstance().loginStatus.value = EnumResult.success
+                } else {
+                    SingalRService.getInstance().loginStatus.value = EnumResult.failed
+                }
+                SingalRService.getInstance().loginResult.value = loginResultValue
             }
         } catch {
             print("Login error=\(error)")
@@ -92,18 +100,29 @@ class SingalRHub: NSObject {
     // WorkerId Set [(등록 및 삭제) / (Insert, Delete) / (注册, 删除)]  return: ResultInfo
     public func RequestChangeWokers(workList: [WorkerInfo], password: String) {
         do {
-            try hubProxy?.invoke("RequestChangeWokers", arguments: [workList, password]) { (result, error) in
-                if let e = error {
-                    print("error: \(e)")
-                } else {
-                    print("Success")
-                    if let r = result {
-                        print("\(r)")
-                    }
+            let jsonString = Mapper<WorkerInfo>().toJSONArray(workList)
+            try hubProxy?.invoke("RequestChangeWorkers", arguments: [jsonString, password]) { (result, error) in
+                guard let resultInfo = Mapper<ResultInfo>().map(JSONObject: result) else {
+                    let resultError = ResultInfo()
+                    resultError.resultIdValue = 99
+                    resultError.Message = "未响应"
+                    SingalRService.getInstance().requestChangeWokersResult.value = resultError
+                    return
                 }
+                
+                SingalRService.getInstance().requestChangeWokersResult.value = resultInfo
             }
         } catch  {
             print("error -- SingalRHub -- RequestChangeWokers")
         }
     }
 }
+
+
+
+
+
+
+
+
+

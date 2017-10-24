@@ -35,3 +35,42 @@ extension Reactive where Base: UIView {
         }
     }
 }
+
+
+infix operator <->
+
+@discardableResult func <-><T>(property: ControlProperty<T>, variable: Variable<T>) -> Disposable {
+    let variableToProperty = variable.asObservable()
+        .bind(to: property)
+    
+    let propertyToVariable = property
+        .subscribe(
+            onNext: { variable.value = $0 },
+            onCompleted: { variableToProperty.dispose() }
+    )
+    
+    return Disposables.create(variableToProperty, propertyToVariable)
+}
+
+
+@discardableResult func <-><T: Comparable>(left: Variable<T>, right: Variable<T>) -> Disposable {
+    let leftToRight = left.asObservable()
+        .distinctUntilChanged()
+        .bind(to: right)
+    
+    let rightToLeft = right.asObservable()
+        .distinctUntilChanged()
+        .bind(to: left)
+    
+//    return StableCompositeDisposable.create(leftToRight, rightToLeft)
+    return Disposables.create(leftToRight, rightToLeft)
+}
+
+
+
+
+
+
+
+
+

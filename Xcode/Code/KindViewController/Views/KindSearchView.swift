@@ -12,8 +12,8 @@ import RxSwift
 
 class KindSearchView: UIView {
     
-    var addCellButton    = UIButton(type: UIButtonType.custom)
-    var removeCellButton = UIButton(type: UIButtonType.custom)
+//    var addCellButton    = UIButton(type: UIButtonType.custom)
+//    var removeCellButton = UIButton(type: UIButtonType.custom)
     var searchBar = UISearchBar()
     
     required init?(coder aDecoder: NSCoder) {
@@ -24,6 +24,7 @@ class KindSearchView: UIView {
         super.init(frame: frame)
         self.backgroundColor = UIColor.init(white: 0.90, alpha: 1)
         
+        /*
         addCellButton.setImage(UIImage.init(named: "addCell"), for: .normal)
         addCellButton.backgroundColor = UIColor.init(white: 0.8, alpha: 1)
         addCellButton.layer.cornerRadius = 5
@@ -47,6 +48,7 @@ class KindSearchView: UIView {
             make.bottom.equalToSuperview().offset(-6)
             make.width.equalTo(30)
         }
+        */
         
         searchBar.placeholder = "Search"
         searchBar.returnKeyType = .search
@@ -54,9 +56,9 @@ class KindSearchView: UIView {
         searchBar.barTintColor = UIColor.green
         self.addSubview(searchBar)
         searchBar.snp.makeConstraints { make in
-            make.top.right.equalToSuperview().offset(1)
-            make.bottom.equalToSuperview().offset(-1)
-            make.left.equalTo(removeCellButton.snp.right)
+            make.top.left.equalToSuperview().offset(1)
+            make.bottom.right.equalToSuperview().offset(-1)
+//            make.left.equalTo(removeCellButton.snp.right)
         }
     }
 }

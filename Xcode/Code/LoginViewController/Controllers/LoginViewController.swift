@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 import MBProgressHUD
 
-class LoginViewController: UIViewController {
+class LoginViewController: BaseViewController {
 
     
     @IBOutlet weak var userNameTextField: UITextField!
@@ -19,7 +19,7 @@ class LoginViewController: UIViewController {
     
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var RegisterButton: UIButton!
-    var HUD:MBProgressHUD?
+//    var HUD:MBProgressHUD?
     
     var viewModel: LoginViewModel!
     let disposeBag = DisposeBag()
@@ -64,15 +64,16 @@ class LoginViewController: UIViewController {
         
         // 登陆返回
         viewModel.loginResult.drive(onNext: { result in
+            self.hiddenHUD()
             switch result {
             case .success:
                 print("成功")
-                self.hiddenHUD()
                 self.dismiss(animated: true, completion: nil)
             case .empty:
                 print("空")
             case .failed:
                 print("失败")
+                self.changeHUDMessage(message: result.description, showTime: 2.0)
             }
         }).addDisposableTo(disposeBag)
         
@@ -85,37 +86,5 @@ class LoginViewController: UIViewController {
         }).addDisposableTo(disposeBag)
     }
 }
-
-
-
-
-/* HUD */
-extension LoginViewController {
-    
-    func showHUD(message: String) {
-        
-        if HUD != nil {
-            return
-        }
-        
-        HUD = MBProgressHUD.showAdded(to: self.view, animated: true)
-        HUD?.bezelView.color = UIColor.black
-        HUD?.contentColor = UIColor.white
-        HUD?.label.text = message
-        HUD?.removeFromSuperViewOnHide = true
-        HUD?.hide(animated: true, afterDelay: 20)
-        HUD?.backgroundView.color = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
-        HUD?.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(hiddenHUD)))
-    }
-    
-    func hiddenHUD() {
-        if HUD != nil {
-            HUD?.removeFromSuperview()
-            HUD = nil
-        }
-    }
-}
-
-
 
 

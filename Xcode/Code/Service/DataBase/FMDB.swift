@@ -8,16 +8,18 @@
 
 import UIKit
 import FMDB
+import RxCocoa
+import RxSwift
 
 class FMDB: NSObject {
-    
     
     let fileURL = try! FileManager.default
         .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
         .appendingPathComponent("MiningDB.sqlite")
     var miningDBQueue: FMDatabaseQueue = FMDatabaseQueue()
     
-
+    
+    
     static let shared = FMDB()
     class func getShared() -> FMDB {
         return shared
@@ -35,14 +37,14 @@ class FMDB: NSObject {
     }
     
     
-    /* 创建数据库 */
+    /* 创建数据库 */ // 注意: 设置String类型时，'001' 存储时会变 '1', 而varchar不会
     private func createDataBase() {
         
         let sql = "CREATE TABLE IF NOT EXISTS WorkerInfoTable( "
             + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
             + "MiningPool String, "
             + "WorkerGroup String, "
-            + "WorkerId String, "
+            + "WorkerId varchar, "
             + "CoinType String, "
             + "UserFlag Bool, "
             + "ActionFlag Integer "
@@ -58,7 +60,11 @@ class FMDB: NSObject {
     /* 增 */
     public func insertSingleDataToWorkerInfoTable(objectData: WorkerInfo) {
         
-        let sql = "INSERT INTO WorkerInfoTable "
+//        let sql = "INSERT INTO WorkerInfoTable "
+//            + "(MiningPool, WorkerGroup, WorkerId, CoinType, UserFlag, ActionFlag)"
+//            + "VALUES (?, ?, ?, ?, ?, ?);"
+        
+        let sql = "INSERT OR REPLACE INTO WorkerInfoTable "
             + "(MiningPool, WorkerGroup, WorkerId, CoinType, UserFlag, ActionFlag)"
             + "VALUES (?, ?, ?, ?, ?, ?);"
         
@@ -91,8 +97,8 @@ class FMDB: NSObject {
     /* 删 */
     public func removeSingleDataFromWorkerInfoTable(objectData: WorkerInfo) {
         
-        let sql = "DELETE FROM WorkerInfoTable WHERE MiningPool = \(objectData.MiningPool!)"
-            + " AND WorkerGroup = \(objectData.WorkerGroup!)  AND WorkerId = \(objectData.WorkerId!)"
+        let sql = "DELETE FROM WorkerInfoTable WHERE MiningPool = '\(objectData.MiningPool!)'"
+            + " AND WorkerGroup = '\(objectData.WorkerGroup!)'  AND WorkerId = '\(objectData.WorkerId!)'"
         
         miningDBQueue.inTransaction({ (db, roolback) -> Void in
             do {
@@ -127,8 +133,8 @@ class FMDB: NSObject {
     /* 改 */
     public func modifySingleDataFromWorkerInfoTableWithWorkerID(objectData: WorkerInfo) {
         /* 这里不仅仅要比较WorkerID了，还有网站和组也要 */
-        let sql = "UPDATE WorkerInfoTable SET UserFlag = (?)  WHERE MiningPool = \(objectData.MiningPool!)"
-            + " AND WorkerGroup = \(objectData.WorkerGroup!)  AND WorkerId = \(objectData.WorkerId!)"
+        let sql = "UPDATE WorkerInfoTable SET UserFlag = (?)  WHERE MiningPool = '\(objectData.MiningPool!)'"
+            + " AND WorkerGroup = '\(objectData.WorkerGroup!)'  AND WorkerId = '\(objectData.WorkerId!)'"
         miningDBQueue.inTransaction({ (db, roolback) -> Void in
             do {
                 try db.executeUpdate(sql, values: [objectData.UserFlag!])
@@ -149,13 +155,13 @@ class FMDB: NSObject {
     /* 查 */
     public func selectMultDataFromWorkerInfoTable(miningPool: String, group: String)  {
         
-        let sql = "SELECT * FROM WorkerInfoTable WHERE MiningPool = \(miningPool)"
-            + " AND WorkerGroup = \(group)"
+        let sql = "SELECT * FROM WorkerInfoTable WHERE MiningPool = '\(miningPool)'"
+            + " AND WorkerGroup = '\(group)'"
         
         miningDBQueue.inTransaction({ (db, roolback) -> Void in
             do {
                 let resultSet:FMResultSet? = try db.executeQuery(sql, values: nil)
-                var arryBuff: [WorkerInfo] = [WorkerInfo]()
+                var arrayBuff: [WorkerInfo] = [WorkerInfo]()
                 while (resultSet?.next())! {
                     let objectBuff = WorkerInfo()
                     objectBuff.MiningPool = resultSet?.string(forColumn: "MiningPool")
@@ -164,8 +170,9 @@ class FMDB: NSObject {
                     objectBuff.CoinType = resultSet?.string(forColumn: "CoinType")
                     objectBuff.UserFlag = resultSet?.bool(forColumn: "UserFlag")
                     objectBuff.ActionFlag = Int((resultSet?.int(forColumn: "ActionFlag"))!)
-                    arryBuff.append(objectBuff)
+                    arrayBuff.append(objectBuff)
                 }
+                SeriveCenter.getInstance().currentLocalDBArrayRxOut.value = arrayBuff
             } catch {
                 roolback.pointee = true
             }

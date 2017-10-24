@@ -123,7 +123,7 @@ class PoolViewController: UIViewController {
         tableView.rx.itemSelected.subscribe(onNext: { [weak self] indexPath in
             let cell = self?.tableView.cellForRow(at: indexPath) as? PoolTableViewCell
             cell?.setSelected(false, animated: false)
-            
+            self?.poolViewModel.cellSelectHandle(cellRow: indexPath.row)
         }).addDisposableTo(disposeBag)
     }
     

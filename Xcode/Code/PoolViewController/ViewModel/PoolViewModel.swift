@@ -24,6 +24,8 @@ class PoolViewModel: NSObject {
     var miningPoolArrayRxOut  = Variable<[String]>([String]())
     var workerGroupArrayRxOut = Variable<[String]>([String]())
     
+    var requestChangeWokersResult = Variable<ResultInfo>(ResultInfo())
+    
     // 解决不了双向绑定，只能先这样用(解决3和4界面的选择项显示同步)
     var currentPoolIndexRxOut  = Variable<Int>(0)
     var currentGroupIndexRxOut = Variable<Int>(0)
@@ -56,7 +58,7 @@ class PoolViewModel: NSObject {
         
         
         /* cell数据 */
-        SeriveCenter.getInstance().localAllArrayRxOut.asObservable().subscribe(onNext : { (value) in
+        SeriveCenter.getInstance().currentAllWorkerInfoArrayRxOut.asObservable().subscribe(onNext : { (value) in
             self.poolArrayRxOut.value = value
         }).addDisposableTo(disposeBag)
         
@@ -69,11 +71,17 @@ class PoolViewModel: NSObject {
         SeriveCenter.getInstance().workerGroupArrayRxOut.asObservable().subscribe(onNext: { (value) in
             self.workerGroupArrayRxOut.value = value
         }).addDisposableTo(disposeBag)
+        
+        
+        /* 添加删除的请求返回 */
+        SeriveCenter.getInstance().requestChangeWokersResult.asObservable().subscribe(onNext: { (value) in
+            self.requestChangeWokersResult.value = value
+        }).addDisposableTo(disposeBag)
     }
     
     public func initSearch() {
         Observable.combineLatest(searchRx.asObservable(),
-                                 SeriveCenter.getInstance().localAllArrayRxOut.asObservable())
+                                 SeriveCenter.getInstance().currentAllWorkerInfoArrayRxOut.asObservable())
             .subscribe(onNext: { (search , arrayRx) in
                 let filterBuff = self.searchFilter(search: search, arrayRx: arrayRx)
                 self.poolArrayRxOut.value = filterBuff
@@ -97,4 +105,36 @@ class PoolViewModel: NSObject {
         print("\(newArray.count)")
         return newArray
     }
+    
+    
+    
+    /* cell有勾选事件 */
+    public func cellSelectHandle(cellRow: Int) {
+        let selectWorkerInfo: WorkerInfo = SeriveCenter.getInstance().currentAllWorkerInfoArrayRxOut.value[cellRow]
+        if selectWorkerInfo.UserFlag == true {
+            selectWorkerInfo.UserFlag = false
+        } else {
+            selectWorkerInfo.UserFlag = true
+        }
+        // 更新数据库，和 更改 currentAllWorkerInfoArrayRxOut 中的值，因为他是一个观察者，所以必须得赋值才会有事件产生
+        SeriveCenter.getInstance().databaseOfSelectMarkChange(object: selectWorkerInfo)
+        SeriveCenter.getInstance().currentAllWorkerInfoArrayRxOut.value[cellRow] = selectWorkerInfo
+    }
+    
+    /* 删除WorkerInfo组 */
+    public func syncDataHandle(deleteBuff: [WorkerInfo]) {
+        SeriveCenter.getInstance().syncToSerivce(workerInfoArray: deleteBuff)
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -55,20 +55,19 @@ extension EnumResult {
     }
 }
 
-/*
+
 extension EnumResult {
     var description: String {
         switch self {
-        case let .success(message):
-            return message
+        case .success:
+            return "登陆成功"
         case .empty:
             return ""
-        case let .failed(message):
-            return message
+        case .failed:
+            return "登陆失败"
         }
     }
 }
- */
 
 extension EnumResult {
     var text: String {

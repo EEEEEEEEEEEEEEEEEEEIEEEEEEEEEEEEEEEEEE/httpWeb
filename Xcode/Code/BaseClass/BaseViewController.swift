@@ -7,29 +7,64 @@
 //
 
 import UIKit
+import MBProgressHUD
 
-class BaseViewController: UIViewController {
+class BaseViewController: UIViewController, MBProgressHUDDelegate {
 
+    var HUD: MBProgressHUD?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    }
+}
+
+
+/* HUD */
+extension BaseViewController {
+    
+    func showHUD(message: String) {
+        
+        if HUD != nil {
+            return
+        }
+        
+        HUD = MBProgressHUD.showAdded(to: self.view, animated: true)
+        HUD?.bezelView.color = UIColor.black
+        HUD?.contentColor = UIColor.white
+        HUD?.label.text = message
+        HUD?.delegate = self
+        HUD?.removeFromSuperViewOnHide = true
+        HUD?.hide(animated: true, afterDelay: 20)
+        HUD?.backgroundView.color = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
+        HUD?.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(hiddenHUD)))
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func hiddenHUD() {
+        HUD?.hide(animated: true)
     }
-    */
-
+    
+    func changeHUDMessage(message: String, showTime: Double) {
+        HUD?.mode = .text
+        HUD?.hide(animated: true, afterDelay: showTime)
+        HUD?.label.text = message
+    }
+    
+    public func hudWasHidden(_ hud: MBProgressHUD) {
+        
+        guard hud == HUD else {
+            return
+        }
+        
+        print("自动退出")
+        if HUD != nil {
+            HUD?.removeFromSuperview()
+            HUD = nil
+        }
+    }
 }

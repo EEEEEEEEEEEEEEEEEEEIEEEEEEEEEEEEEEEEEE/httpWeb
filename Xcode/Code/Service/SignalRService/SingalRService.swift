@@ -14,17 +14,17 @@ import Dollar
 
 class SingalRService: NSObject {
     
+    let disposeBag = DisposeBag()
+    
     var signalR: SignalR?
     let signalRHub = SingalRHub()
     
-    let disposeBag = DisposeBag()
-    
     var conntentStatus = Variable<State>(.disconnected)
     var loginStatus    = Variable<EnumResult>(EnumResult.failed)
-    var loginResult    = LoginResponseModel()
+    var loginResult    = Variable<LoginResponseModel>(LoginResponseModel())
     var workerGroupInfoListResult = Variable<[LoginWorkerGroupInfo]>([LoginWorkerGroupInfo]())
     var serivceWorkerInfoArrayRx  = Variable<[WorkerInfo]>([WorkerInfo]())
-    
+    var requestChangeWokersResult = Variable<ResultInfo>(ResultInfo())
     
     
     static let instance = SingalRService()

@@ -11,11 +11,11 @@ import ObjectMapper
 
 class LoginResponseModel: NSObject, Mappable {
     
-    var UserGroup    : String = ""
-    var UserID       : String = ""
-    var UserPassword : String = ""
-    var UserName     : String = ""
-    var UserAuth     : Int    = 0
+    var UserGroup    : String?
+    var UserID       : String?
+    var UserPassword : String?
+    var UserName     : String?
+    var UserAuth     : Int?
     
     override init() {
         super.init()

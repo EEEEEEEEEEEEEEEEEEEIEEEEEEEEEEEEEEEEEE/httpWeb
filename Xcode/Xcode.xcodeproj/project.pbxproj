@@ -73,6 +73,9 @@
 		E36662BE1F71FF3100F33EF9 /* WorkerTableViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E36662BD1F71FF3100F33EF9 /* WorkerTableViewFooter.swift */; };
 		E3AE8FD61F8B1DE100A0B6EB /* LoginResponseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3AE8FD41F8B1DE100A0B6EB /* LoginResponseModel.swift */; };
 		E3AE8FD71F8B1DE100A0B6EB /* LoginWorkerGroupInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3AE8FD51F8B1DE100A0B6EB /* LoginWorkerGroupInfo.swift */; };
+		E3D8A8811F9DC4E1006E5C92 /* EditWorkerInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3D8A8801F9DC4E0006E5C92 /* EditWorkerInfoViewModel.swift */; };
+		E3D8A8841F9DD35F006E5C92 /* EditWorkerInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3D8A8821F9DD35F006E5C92 /* EditWorkerInfoViewController.swift */; };
+		E3D8A8851F9DD35F006E5C92 /* EditWorkerInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E3D8A8831F9DD35F006E5C92 /* EditWorkerInfoViewController.xib */; };
 		E3DB7F521F749C0100FB7571 /* PayoutPageMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DB7F511F749C0100FB7571 /* PayoutPageMenuViewController.swift */; };
 		E3DB7F541F74A30000FB7571 /* PayoutTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DB7F531F74A30000FB7571 /* PayoutTableViewHeader.swift */; };
 		E3DB7F561F74B89400FB7571 /* PoolTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DB7F551F74B89400FB7571 /* PoolTableViewHeader.swift */; };
@@ -161,6 +164,9 @@
 		E36662BD1F71FF3100F33EF9 /* WorkerTableViewFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkerTableViewFooter.swift; sourceTree = "<group>"; };
 		E3AE8FD41F8B1DE100A0B6EB /* LoginResponseModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginResponseModel.swift; sourceTree = "<group>"; };
 		E3AE8FD51F8B1DE100A0B6EB /* LoginWorkerGroupInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginWorkerGroupInfo.swift; sourceTree = "<group>"; };
+		E3D8A8801F9DC4E0006E5C92 /* EditWorkerInfoViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditWorkerInfoViewModel.swift; sourceTree = "<group>"; };
+		E3D8A8821F9DD35F006E5C92 /* EditWorkerInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditWorkerInfoViewController.swift; sourceTree = "<group>"; };
+		E3D8A8831F9DD35F006E5C92 /* EditWorkerInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditWorkerInfoViewController.xib; sourceTree = "<group>"; };
 		E3DB7F511F749C0100FB7571 /* PayoutPageMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PayoutPageMenuViewController.swift; sourceTree = "<group>"; };
 		E3DB7F531F74A30000FB7571 /* PayoutTableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PayoutTableViewHeader.swift; sourceTree = "<group>"; };
 		E3DB7F551F74B89400FB7571 /* PoolTableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PoolTableViewHeader.swift; sourceTree = "<group>"; };
@@ -626,6 +632,7 @@
 		E315D2D61F6FCC9F00394CE3 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				E3D8A87B1F9DC4BA006E5C92 /* EditWorkerInfo */,
 				E315D2D71F6FCC9F00394CE3 /* KindViewController.swift */,
 				E315D2D81F6FCC9F00394CE3 /* KindViewController.xib */,
 				E3DB7F5D1F74F15600FB7571 /* KindsViewController.swift */,
@@ -678,6 +685,16 @@
 				E34A88271F9072B8003BED22 /* FMDB.swift */,
 			);
 			path = DataBase;
+			sourceTree = "<group>";
+		};
+		E3D8A87B1F9DC4BA006E5C92 /* EditWorkerInfo */ = {
+			isa = PBXGroup;
+			children = (
+				E3D8A8801F9DC4E0006E5C92 /* EditWorkerInfoViewModel.swift */,
+				E3D8A8821F9DD35F006E5C92 /* EditWorkerInfoViewController.swift */,
+				E3D8A8831F9DD35F006E5C92 /* EditWorkerInfoViewController.xib */,
+			);
+			path = EditWorkerInfo;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -745,6 +762,7 @@
 			files = (
 				E306FD181F623E7F001623D8 /* LoginViewController.xib in Resources */,
 				E317529A1F666BCE00950F80 /* RegisterViewController.xib in Resources */,
+				E3D8A8851F9DD35F006E5C92 /* EditWorkerInfoViewController.xib in Resources */,
 				E31531B91F5F831500E16866 /* LaunchScreen.storyboard in Resources */,
 				E31531B61F5F831500E16866 /* Assets.xcassets in Resources */,
 				E315D2DD1F6FCC9F00394CE3 /* KindViewController.xib in Resources */,
@@ -818,6 +836,7 @@
 				E317529C1F666C0300950F80 /* RegisterViewModel.swift in Sources */,
 				E314E51F1F76495D006EFD97 /* WorkerInfo.swift in Sources */,
 				E315D2E31F6FCD6F00394CE3 /* KindModel.swift in Sources */,
+				E3D8A8841F9DD35F006E5C92 /* EditWorkerInfoViewController.swift in Sources */,
 				E34586471F7908A70021A677 /* SeriveCenter.swift in Sources */,
 				E30C41B61F712F450064EF08 /* workerTableViewHeader.swift in Sources */,
 				E315D2E01F6FCD5D00394CE3 /* KindCollectionViewCell.swift in Sources */,
@@ -873,6 +892,7 @@
 				E3DB7F5E1F74F15600FB7571 /* KindsViewController.swift in Sources */,
 				E3DC9F341F8CEB3B00E0AD58 /* WorkerBaseViewController.swift in Sources */,
 				E306FD121F623C93001623D8 /* BaseClass.swift in Sources */,
+				E3D8A8811F9DC4E1006E5C92 /* EditWorkerInfoViewModel.swift in Sources */,
 				E317529E1F6692C100950F80 /* String.swift in Sources */,
 				E3DB7F541F74A30000FB7571 /* PayoutTableViewHeader.swift in Sources */,
 				E306FD1A1F6276C8001623D8 /* LoginViewModel.swift in Sources */,

@@ -7,10 +7,29 @@
 //
 
 import UIKit
+import ObjectMapper
 
-class ResultInfo: NSObject {
+class ResultInfo: NSObject, Mappable {
     
     // Result Code (0:Success, 9999:Error)
-    var ResultId: Int?
-    var Message: Int?
+    var resultIdValue: Int? {
+        didSet{
+            ResultId = EnumHubResult(rawValue: resultIdValue!)
+        }
+    }
+    
+    var ResultId: EnumHubResult?
+    var Message: String?
+    
+    override init() {
+        super.init()
+    }
+    
+    required init?(map: Map) {
+    }
+    
+    func mapping(map: Map) {
+        resultIdValue <- map["ResultId"]
+        Message       <- map["Message"]
+    }
 }
