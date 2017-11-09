@@ -62,6 +62,7 @@
 		E317529C1F666C0300950F80 /* RegisterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E317529B1F666C0300950F80 /* RegisterViewModel.swift */; };
 		E317529E1F6692C100950F80 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E317529D1F6692C100950F80 /* String.swift */; };
 		E318EDC31F70EFE20085108A /* NavBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E318EDC21F70EFE20085108A /* NavBarView.swift */; };
+		E327AF721FB4565B00B4D0CE /* Chained.swift in Sources */ = {isa = PBXBuildFile; fileRef = E327AF711FB4565B00B4D0CE /* Chained.swift */; };
 		E332DAAE1F8E1866008015FB /* PayoutBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E332DAAD1F8E1866008015FB /* PayoutBaseViewController.swift */; };
 		E34586451F78EBE60021A677 /* ProjectType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34586441F78EBE60021A677 /* ProjectType.swift */; };
 		E34586471F7908A70021A677 /* SeriveCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34586461F7908A70021A677 /* SeriveCenter.swift */; };
@@ -152,6 +153,7 @@
 		E317529D1F6692C100950F80 /* String.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		E318EDC11F70BD020085108A /* BridgingHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
 		E318EDC21F70EFE20085108A /* NavBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavBarView.swift; sourceTree = "<group>"; };
+		E327AF711FB4565B00B4D0CE /* Chained.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chained.swift; sourceTree = "<group>"; };
 		E332DAAD1F8E1866008015FB /* PayoutBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PayoutBaseViewController.swift; sourceTree = "<group>"; };
 		E34586441F78EBE60021A677 /* ProjectType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectType.swift; sourceTree = "<group>"; };
 		E34586461F7908A70021A677 /* SeriveCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeriveCenter.swift; sourceTree = "<group>"; };
@@ -350,6 +352,7 @@
 			children = (
 				E306FD2B1F629283001623D8 /* RxSwift.swift */,
 				E317529D1F6692C100950F80 /* String.swift */,
+				E327AF711FB4565B00B4D0CE /* Chained.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -829,6 +832,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E306FD171F623E7F001623D8 /* LoginViewController.swift in Sources */,
+				E327AF721FB4565B00B4D0CE /* Chained.swift in Sources */,
 				E314E5211F76498B006EFD97 /* ResultInfo.swift in Sources */,
 				E306FD271F628E51001623D8 /* BaseLabel.swift in Sources */,
 				E30C3A331F7365D500DF112C /* WorkerSearchView.swift in Sources */,

@@ -24,7 +24,10 @@ class SingalRHub: NSObject {
     /*
      public CustomerInfo RequestLoginAuth(string userID, string userPass)
      */
-    public func RequestLoginAuth(userID: String, userPass: String) {
+    public func RequestLoginAuth(userID: String, userPass: String, callBack: ( (_ resultValue: Any?, _ error: Any?)->() )? = nil) {
+        
+        callBack!("test", "123")
+        
         do {
             guard let hubProxy = hubProxy else {
                 return
@@ -59,7 +62,8 @@ class SingalRHub: NSObject {
                 return
             }
             
-            try hubProxy.invoke("RequestWorkerGroupList", arguments: []){ (result, error) in
+            // RequestWorkerGroupInfo  RequestWorkerGroupList
+            try hubProxy.invoke("RequestWorkerGroupInfo", arguments: []){ (result, error) in
                 if let buffList = Mapper<LoginWorkerGroupInfo>().mapArray(JSONObject: result) {
                     SingalRService.getInstance().workerGroupInfoListResult.value = buffList
                 } else {
