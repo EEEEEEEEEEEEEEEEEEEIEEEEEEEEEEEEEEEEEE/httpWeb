@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Code/Service/SeriveCenter.swift"
-            timestampString = "530446785.363449"
+            timestampString = "531915127.810134"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "106"
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Code/Service/SeriveCenter.swift"
-            timestampString = "530446785.363449"
+            timestampString = "531915127.810248"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "395"
-            endingLineNumber = "395"
+            startingLineNumber = "398"
+            endingLineNumber = "398"
             landmarkName = "initGetSignalRData()"
             landmarkType = "7">
          </BreakpointContent>
@@ -38,11 +38,11 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Code/Service/SeriveCenter.swift"
-            timestampString = "530446785.363449"
+            timestampString = "531915127.810305"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "158"
@@ -57,13 +57,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Code/LoginViewController/Controllers/LoginViewController.swift"
-            timestampString = "530528202.248405"
+            filePath = "Code/Service/SignalRService/SingalRHub.swift"
+            timestampString = "531915127.810368"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "73"
-            endingLineNumber = "73"
-            landmarkName = "initView()"
+            startingLineNumber = "67"
+            endingLineNumber = "67"
+            landmarkName = "RequestWorkerGroupList()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -74,28 +74,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Code/Service/SignalRService/SingalRHub.swift"
-            timestampString = "530529236.487083"
+            timestampString = "531915127.81042"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "37"
-            endingLineNumber = "37"
-            landmarkName = "RequestLoginAuth(userID:userPass:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Code/LoginViewController/Controllers/LoginViewController.swift"
-            timestampString = "530530655.021617"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
-            landmarkName = "initView()"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
+            landmarkName = "RequestWorkerGroupList()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

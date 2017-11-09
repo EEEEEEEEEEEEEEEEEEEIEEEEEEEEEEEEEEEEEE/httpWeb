@@ -28,7 +28,7 @@ class ProjectConfig: NSObject {
     
     
     public func initData() {
-        SignalRServerUrl = "http://182.162.103.37:9220"
+        SignalRServerUrl = "http://182.162.103.37:9320"
 //        SignalRServerUrl = "http://182.162.103.34:9220"
         
         /* 观察登陆的值 */

@@ -62,7 +62,7 @@ extension EnumResult {
         case .success:
             return "登陆成功"
         case .empty:
-            return ""
+            return "失败, 原因未知"
         case .failed:
             return "登陆失败"
         }

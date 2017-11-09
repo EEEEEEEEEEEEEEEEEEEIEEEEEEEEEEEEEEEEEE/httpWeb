@@ -49,6 +49,7 @@ class KindSearchView: UIView {
             make.width.equalTo(30)
         }
         */
+        // UITextField()
         
         searchBar.placeholder = "Search"
         searchBar.returnKeyType = .search

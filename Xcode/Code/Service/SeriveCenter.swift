@@ -294,7 +294,10 @@ extension SeriveCenter {
     
     /* 登陆 */
     func login(_ username: String, password: String) -> Observable<EnumResult> {
-        singalR.signalRHub.RequestLoginAuth(userID: username, userPass: password)
+//        singalR.signalRHub.RequestLoginAuth(userID: username, userPass: password)
+        singalR.signalRHub.RequestLoginAuth(userID: username, userPass: password, callBack: { (reslutValue, error) in
+            print("登陆 \(String(describing: reslutValue)) -- \(error)")
+        })
         return singalR.loginStatus.asObservable().skip(1)
     }
     

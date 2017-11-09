@@ -24,6 +24,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        self.window?.rootViewController = LoginViewController()
 //        self.window?.rootViewController = PayoutsViewController()
 //        self.window?.rootViewController = WorkerViewController()
+        
+        // 测试链式编程
+        _ = Chained().request(url: "https://www.test.com").success {
+            print("成功了")
+            }.error{ (error) in
+                print("失败了。。。。\(error.domain)")
+            }
+        
         let mainVC = MainViewController()
         self.window?.rootViewController = mainVC
         

@@ -43,8 +43,8 @@ class LoginViewController: BaseViewController {
 //        let image = UIImage.init(named: "LoginBack")
 //        self.view.layer.contents = image?.cgImage
         self.view.backgroundColor = CommonSceneColor()
-        userNameTextField.text = "hxI"
-        passwordTextField.text = "i12345"
+        userNameTextField.text = "hxIA"
+        passwordTextField.text = "a12345"
         
         viewModel = LoginViewModel(input: (username: userNameTextField.rx.text.orEmpty.asDriver(),
                                            password: passwordTextField.rx.text.orEmpty.asDriver(),
@@ -62,21 +62,19 @@ class LoginViewController: BaseViewController {
             self.showHUD(message: "Loading...")
         }).addDisposableTo(disposeBag)
         
+        
         // 登陆返回
         viewModel.loginResult.drive(onNext: { result in
-            self.hiddenHUD()
             switch result {
             case .success:
-                print("成功")
+                self.hiddenHUD()
                 self.dismiss(animated: true, completion: nil)
             case .empty:
-                print("空")
+                self.changeHUDMessage(message: result.description, showTime: 2.0)
             case .failed:
-                print("失败")
                 self.changeHUDMessage(message: result.description, showTime: 2.0)
             }
         }).addDisposableTo(disposeBag)
-        
         
         
         // 注册点击事件

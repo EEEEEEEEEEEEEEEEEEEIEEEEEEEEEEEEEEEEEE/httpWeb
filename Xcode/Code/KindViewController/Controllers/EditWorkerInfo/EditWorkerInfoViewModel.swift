@@ -15,10 +15,10 @@ class EditWorkerInfoViewModel: NSObject {
     let disposeBag = DisposeBag()
     
     // input
-    var miningPool  = Variable<String>("")
-    var workerGroup = Variable<String>("")
+    var miningPool  = Variable<String?>("")
+    var workerGroup = Variable<String?>("")
     var workerId    = Variable<String?>("test")
-    var coinType    = Variable<String>("ETH")
+    var coinType    = Variable<String?>("")
     var userFlag    = Variable<Bool>(true)
     /* 1：添加，2：删除 */
     //var actionFlag = Variable<Int>(1)
@@ -30,8 +30,14 @@ class EditWorkerInfoViewModel: NSObject {
         super.init()
         SeriveCenter.getInstance().workerGroupArrayInfoRxOut.asObservable()
             .distinctUntilChanged().subscribe(onNext: { (currentPoolGroup) in
+                
+                if (currentPoolGroup.MiningPool == nil) ||
+                    (currentPoolGroup.WorkerGroup == nil) {
+                    return
+                }
                 self.miningPool.value  = currentPoolGroup.MiningPool!
                 self.workerGroup.value = currentPoolGroup.WorkerGroup!
+                self.coinType.value    = currentPoolGroup.CoinType
         }).addDisposableTo(disposeBag)
         
         SeriveCenter.getInstance().requestChangeWokersResult.asObservable()
@@ -44,17 +50,15 @@ class EditWorkerInfoViewModel: NSObject {
     public func saveDataHandle() {
         var editWorkerInfoArray = [WorkerInfo]()
         let editWorkerInfo = WorkerInfo()
-        editWorkerInfo.MiningPool  = miningPool.value.lowercased()
-        editWorkerInfo.WorkerGroup = workerGroup.value.lowercased()
+        editWorkerInfo.MiningPool  = miningPool.value?.lowercased()
+        editWorkerInfo.WorkerGroup = workerGroup.value?.lowercased()
         editWorkerInfo.WorkerId    = workerId.value?.lowercased()
-        editWorkerInfo.CoinType    = coinType.value.lowercased()
+        editWorkerInfo.CoinType    = coinType.value?.lowercased()
         editWorkerInfo.UserFlag    = userFlag.value
         editWorkerInfo.ActionFlag  = EnumEditType.Add.rawValue
         editWorkerInfoArray.append(editWorkerInfo)
         SeriveCenter.getInstance().syncToSerivce(workerInfoArray: editWorkerInfoArray)
     }
-    
-    
 }
 
 

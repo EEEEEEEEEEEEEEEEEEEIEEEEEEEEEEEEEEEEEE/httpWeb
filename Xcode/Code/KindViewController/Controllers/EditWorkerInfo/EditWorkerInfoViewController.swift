@@ -14,7 +14,12 @@ class EditWorkerInfoViewController: BaseViewController {
 
     let disposeBag = DisposeBag()
     var editWorkerInfoViewModel = EditWorkerInfoViewModel()
+    
+    @IBOutlet weak var miningPoolTextField: UITextField!
+    @IBOutlet weak var workerGoupTextField: UITextField!
+    @IBOutlet weak var coinTypeTextField: UITextField!
     @IBOutlet weak var workerIdTextField: UITextField!
+    @IBOutlet weak var userFalgSwitch: UISwitch!
     
     
     override func viewDidLoad() {
@@ -58,21 +63,17 @@ class EditWorkerInfoViewController: BaseViewController {
                 guard (result.ResultId != nil) && (result.Message != nil) else {
                     return
                 }
-                
                 self.changeHUDMessage(message: "\(result.Message!)", showTime: 2)
-//                self.hiddenHUD()
-                
-//                if !(result.Message?.contains("Add"))! {
-//                    return
-//                }
-//                print("++++ \(result.ResultId!) - \(result.Message!)")
         }).addDisposableTo(disposeBag)
         
-        //  0 Add success : 1
-        // 99 Wrong password
         
         // 双向绑定 参考：https://stackoverflow.com/questions/37496074/two-way-binding-in-rxswift
-        (workerIdTextField.rx.text <-> editWorkerInfoViewModel.workerId).addDisposableTo(disposeBag)
+        
+        (miningPoolTextField.rx.text <-> editWorkerInfoViewModel.miningPool).addDisposableTo(disposeBag)
+        (workerGoupTextField.rx.text <-> editWorkerInfoViewModel.workerGroup).addDisposableTo(disposeBag)
+        (coinTypeTextField.rx.text   <-> editWorkerInfoViewModel.coinType).addDisposableTo(disposeBag)
+        (workerIdTextField.rx.text   <-> editWorkerInfoViewModel.workerId).addDisposableTo(disposeBag)
+        (userFalgSwitch.rx.isOn      <-> editWorkerInfoViewModel.userFlag).addDisposableTo(disposeBag)
     }
 }
 
